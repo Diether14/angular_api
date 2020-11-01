@@ -1,0 +1,161 @@
+=======================================
+=======================================
+                ROUTES
+=======================================
+=======================================
+
+basic format is as goes:
+<http request>: <namespace>/<...links/ :id> - <description (optional)>
+
+
+=======================================
+USERS:
+=======================================
+
+-- users
+get: auth/
+get: auth/:id
+post: auth
+put: auth/:id
+delete: auth/:id
+
+-- ip addresses
+get: auth/ip/
+get: auth/ip/:id
+post: auth/ip/
+put: auth/ip/
+delete: auth/ip/
+
+-- user settings
+get: auth/settings/
+get: auth/settings/:id
+post: auth/settings/
+put: auth/settings/
+delete: auth/settings/
+
+
+=======================================
+COMMUNITY:
+=======================================
+
+-- community
+get: community/
+get: community/:id
+post: community
+put: community/:id
+delete: community/:id
+
+-- photos
+get: community/photos/
+get: community/photos/:id
+post: community/photos
+put: community/photos/:id
+delete: community/photos/:id
+
+--categories
+get: community/categories/
+get: community/categories/:id
+post: community/categories
+put: community/categories/:id
+delete: community/categories/:id
+
+--sub categories
+get: community/categories/sub
+get: community/categories/sub/:id
+post: community/categories/sub
+put: community/categories/sub/:id
+delete: community/categories/sub/:id
+
+--settings
+get: community/category/settings/:id
+post: community/category/settings
+put: community/category/settings/:id
+put: community/category/delete/:id
+
+--users
+get: community/users/:community_id
+get: community/users/:community_id/:user_id
+post: community/users
+put: community/users/:community_id/:id
+put: community/users/:community_id/:id
+
+=======================================
+POSTS
+=======================================
+
+--user posts (get users subscribed/part of the company)
+get: posts/:id
+get: posts/community/:community_id
+get: posts/users/:user_id
+post: posts/
+put: posts/:id
+delete: posts/:id
+
+--post comments
+get: posts/comments/:id
+get: posts/comments/posts/:post_id
+get: posts/comments/users/:user_id
+post: posts/comments/
+put: posts/comments/:comment_id
+delete: posts/comments/:comment_id
+
+--post comment replies
+get: posts/comments/replies/:id
+get: posts/comments/replies/comments/:comment_id
+get: posts/comments/replies/users/:user_id
+post: posts/comments/replies/
+put: posts/comments/replies/:id
+delete: posts/comments/replies/:id
+
+--post reports
+get: posts/reports/:id
+get: posts/reports/posts/:post_id
+get: posts/reports/community/:community_id
+get: posts/reports/users/:user_id
+post: posts/reports/
+put: posts/reports/:post_id/:user_id/:reply_id
+delete: posts/reports/:post_id/:user_id/:reply_id
+
+--post votes
+get: posts/votes/:id
+get: posts/votes/posts/:post_id
+get: posts/votes/users/:user_id
+post: posts/votes
+put: posts/votes/:post_id/:user_id/:vote_id
+delete: posts/votes/:post_id/:user_id/:vote_id
+
+
+=======================================
+NOTIFICATIONS
+=======================================
+
+get: notifications/
+get: notifications/:id
+get: notifications/sender/:sender_id
+get: notifications/receiver/:receiver_id
+get: notifications/type/:id
+post: notifications
+put: notifications/:id
+delete: notifications/:id
+
+
+=======================================
+EMOTICONS
+=======================================
+
+--emoticon bundles
+get: emoticon/bundles/
+get: emoticon/bundles/:id
+get: emoticon/bundles/users/:user_id
+post: emoticon/bundles
+put: emoticon/bundles/:id
+delete: emoticon/bundles/:id
+
+--emoticons
+get: emoticons/:id
+get: emoticons/users/:user_id
+get: emoticons/bundles/:bundle_id
+post: emoticons
+put: emoticons/:id
+delete: emoticons/:id
+
