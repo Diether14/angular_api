@@ -11,91 +11,91 @@ const express = require('express'),
     
 
     // community
-    router.get('/community', async (req, res) => {
-        console.log("test")
+    router.get('/', async (req, res) => {
+        console.log("community test")
     })
 
-    router.get('/community/:id', async (req, res) => {
+    router.get('//:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.post('/community', async (req, res) => {
+    router.post('/', async (req, res) => {
         console.log("test")
     })
 
-    router.put('/community/:id', async (req, res) => {
+    router.put('/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.delete('/community/:id', async (req, res) => {
+    router.delete('/:id', async (req, res) => {
         console.log("test")
     })
 
     // community photos
-    router.get('/community/categories', async (req, res) => {
+    router.get('/categories', async (req, res) => {
         console.log("test")
     })
 
-    router.get('/community/categories/:id', async (req, res) => {
+    router.get('/categories/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.post('/community/categories', async (req, res) => {
+    router.post('/categories', async (req, res) => {
         console.log("test")
     })
 
-    router.put('/community/categories/:id', async (req, res) => {
+    router.put('/categories/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.delete('/community/categories/:id', async (req, res) => {
+    router.delete('/categories/:id', async (req, res) => {
         console.log("test")
     })
 
 
     // sub categories
-    router.get('/community/subcategories', async (req, res) => {
+    router.get('/subcategories', async (req, res) => {
         console.log("test")
     })
 
-    router.get('/community/subcategories/:id', async (req, res) => {
+    router.get('/subcategories/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.post('/community/subcategories', async (req, res) => {
+    router.post('/subcategories', async (req, res) => {
         console.log("test")
     })
 
-    router.put('/community/subcategories/:id', async (req, res) => {
+    router.put('/subcategories/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.delete('/community/subcategories/:id', async (req, res) => {
+    router.delete('/subcategories/:id', async (req, res) => {
         console.log("test")
     })
 
 
     // posts
-    router.get('community/posts', async (req, res) => {
+    router.get('/posts', async (req, res) => {
         console.log("test")
     })
 
-    router.get('community/posts/:id', async (req, res) => {
+    router.get('/posts/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.post('community/posts', async (req, res) => {
+    router.post('/posts', async (req, res) => {
         console.log("test")
     })
 
-    router.put('community/posts/:id', async (req, res) => {
+    router.put('/posts/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
@@ -105,46 +105,46 @@ const express = require('express'),
     })
 
     // category settings
-    router.get('/community/category/settings/:id', async (req, res) => {
+    router.get('/category/settings/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.post('/community/category/settings', async (req, res) => {
+    router.post('/category/settings', async (req, res) => {
         console.log("test")
     })
 
-    router.put('/community/category/settings/:id', async (req, res) => {
+    router.put('/category/settings/:id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.delete('/community/category/settings/:id', async (req, res) => {
+    router.delete('/category/settings/:id', async (req, res) => {
         console.log("test")
     })
 
 
     // community users
-    router.get('/community/users/:com_id', async (req, res) => {
+    router.get('/users/:com_id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.get('/community/users/:com_id/:user_id', async (req, res) => {
+    router.get('/users/:com_id/:user_id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.post('/community/users/:com_id/:user_id', async (req, res) => {
+    router.post('/users/:com_id/:user_id', async (req, res) => {
         console.log("test")
     })
 
-    router.put('/community/users/:com_id/:user_id', async (req, res) => {
+    router.put('/users/:com_id/:user_id', async (req, res) => {
         console.log(req.params.id)
         console.log("test")
     })
 
-    router.delete('/community/users/:com_id/:user_id', async (req, res) => {
+    router.delete('/users/:com_id/:user_id', async (req, res) => {
         console.log("test")
     })
 

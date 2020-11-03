@@ -8,43 +8,43 @@ const express = require('express'),
     usersReportTable = "users_report"
 
 // users
-router.get('/auth', async (req, res) => {
+router.get('/', async (req, res) => {
     console.log("test")
 })
 
-router.get('/auth/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     console.log(req.params.id)
     console.log("test")
 })
 
-router.post('/auth', async (req, res) => {
+router.post('/', async (req, res) => {
     console.log("test")
 })
 
-router.put('/auth/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     console.log(req.params.id)
     console.log("test")
 })
 
-router.delete('/auth/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     console.log("test")
 })
 
 // ip addresses
-router.get('/auth/ip', async (req, res) => {
+router.get('/ip', async (req, res) => {
     console.log("test")
 })
 
-router.get('/auth/ip/:id', async (req, res) => {
+router.get('/ip/:id', async (req, res) => {
     console.log(req.params.id)
     console.log("test")
 })
 
-router.post('/auth/ip', async (req, res) => {
+router.post('/ip', async (req, res) => {
     console.log("test")
 })
 
-router.put('/auth/ip/:id', async (req, res) => {
+router.put('/ip/:id', async (req, res) => {
     console.log(req.params.id)
     console.log("test")
 })
@@ -54,25 +54,25 @@ router.delete('/auth/ip/:id', async (req, res) => {
 })
 
 // user settings
-router.get('/auth/settings', async (req, res) => {
+router.get('/settings', async (req, res) => {
     console.log("test")
 })
 
-router.get('/auth/settings/:id', async (req, res) => {
+router.get('/settings/:id', async (req, res) => {
     console.log(req.params.id)
     console.log("test")
 })
 
-router.post('/auth/settings', async (req, res) => {
+router.post('/settings', async (req, res) => {
     console.log("test")
 })
 
-router.put('/auth/settings/:id', async (req, res) => {
+router.put('/settings/:id', async (req, res) => {
     console.log(req.params.id)
     console.log("test")
 })
 
-router.delete('/auth/settings/:id', async (req, res) => {
+router.delete('/settings/:id', async (req, res) => {
     console.log("test")
 })
 

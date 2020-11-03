@@ -12,58 +12,58 @@ const express = require('express'),
 
 
 // posts
-router.get('/posts/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/community/:com_id', async (req, res) => {
+router.get('/community/:com_id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/users/:user_id', async (req, res) => {
+router.get('/users/:user_id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts', async (req, res) => {
+router.get('/', async (req, res) => {
     console.log("test")
 })
 
-router.post('/posts', async (req, res) => {
+router.post('/', async (req, res) => {
     console.log("test")
 })
 
-router.put('/posts/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     console.log("test")
 })
 
-router.delete('/posts/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     console.log("test")
 })
 
 
 
 // comments
-router.get('/posts/comments/:id', async (req, res) => {
+router.get('/comments/:id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/comments/post/:post_id', async (req, res) => {
+router.get('/comments/post/:post_id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/comments/users/:user_id', async (req, res) => {
+router.get('/comments/users/:user_id', async (req, res) => {
     console.log("test")
 })
 
-router.post('/posts/comments', async (req, res) => {
+router.post('/comments', async (req, res) => {
     console.log("test")
 })
 
-router.put('/posts/comments/:id', async (req, res) => {
+router.put('/comments/:id', async (req, res) => {
     console.log("test")
 })
 
-router.delete('/posts/comments/:id', async (req, res) => {
+router.delete('/comments/:id', async (req, res) => {
     console.log("test")
 })
 
@@ -72,79 +72,79 @@ router.delete('/posts/comments/:id', async (req, res) => {
 
 
 // comment replies
-router.get('/posts/comments/replies/:id', async (req, res) => {
+router.get('/comments/replies/:id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/comments/replies/comments/:comment_id', async (req, res) => {
+router.get('/comments/replies/comments/:comment_id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/comments/replies/users/:user_id', async (req, res) => {
+router.get('/comments/replies/users/:user_id', async (req, res) => {
     console.log("test")
 })
 
-router.post('/posts/comments/replies', async (req, res) => {
+router.post('/comments/replies', async (req, res) => {
     console.log("test")
 })
 
-router.put('/posts/comments/replies/:id', async (req, res) => {
+router.put('/comments/replies/:id', async (req, res) => {
     console.log("test")
 })
 
-router.delete('/posts/comments/replies/:id', async (req, res) => {
+router.delete('/comments/replies/:id', async (req, res) => {
     console.log("test")
 })
 
 
 // repots
-router.get('/posts/reports/:id', async (req, res) => {
+router.get('/reports/:id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/reports/comments/:comment_id', async (req, res) => {
+router.get('/reports/comments/:comment_id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/reports/users/:user_id', async (req, res) => {
+router.get('/reports/users/:user_id', async (req, res) => {
     console.log("test")
 })
 
-router.post('/posts/reports/', async (req, res) => {
+router.post('/reports/', async (req, res) => {
     console.log("test")
 })
 
-router.put('/posts/reports/:id', async (req, res) => {
+router.put('/reports/:id', async (req, res) => {
     console.log("test")
 })
 
-router.delete('/posts/reports/:id', async (req, res) => {
+router.delete('/reports/:id', async (req, res) => {
     console.log("test")
 })
 
 
 // votes
-router.get('/posts/votes/:id', async (req, res) => {
+router.get('/votes/:id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/votes/posts/:post_id', async (req, res) => {
+router.get('/votes/posts/:post_id', async (req, res) => {
     console.log("test")
 })
 
-router.get('/posts/votes/users/:user_id', async (req, res) => {
+router.get('/votes/users/:user_id', async (req, res) => {
     console.log("test")
 })
 
-router.post('/posts/votes', async (req, res) => {
+router.post('/votes', async (req, res) => {
     console.log("test")
 })
 
-router.put('/posts/votes/:id', async (req, res) => {
+router.put('/votes/:id', async (req, res) => {
     console.log("test")
 })
 
-router.delete('/posts/votes/:id', async (req, res) => {
+router.delete('/votes/:id', async (req, res) => {
     console.log("test")
 })
 

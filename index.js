@@ -10,7 +10,7 @@ app.use(express.urlencoded())
 app.use(cors())
 
 
-app.use(`/api/${version}/users`, require('./routes/users.routes'))
+app.use(`/api/${version}/auth`, require('./routes/users.routes'))
 app.use(`/api/${version}/community`, require('./routes/community.routes'))
 app.use(`/api/${version}/posts`, require('./routes/posts.routes'))
 app.use(`/api/${version}/emoticons`, require('./routes/emoticons.routes'))
