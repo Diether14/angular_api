@@ -1,3 +1,5 @@
+const connection = require('./../config/database.config')
+
 const express = require('express'),
     db = require('./../config/database.config'),
     router = express.Router(),
@@ -11,13 +13,36 @@ const express = require('express'),
     
 
     // community
-    router.get('/', async (req, res) => {
-        console.log("community test")
+
+    // router.get('/', async (req, res) => {
+    //     connection.query("SELECT * FROM communitiy")
+    // })
+
+    router.get('/:id', async (req, res) => {
+        console.log("test")
     })
 
-    router.get('//:id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
+    router.get('/user/:user_id', async (req, res) => {
+        connection.query(`SELECT * FROM community where user_id = '${req.params.user_id}'`, (err, results, fields) => {
+            if(err){
+                
+                res.send(err)
+                
+                /* return {
+                    status: 0,
+                    message: "Failed to get user's communities"
+                } */
+            }else{
+                console.log(results)
+                res.json(results)
+                // return {
+                //     status: 1,
+                //     message: "Failed to get user's communities",
+                //     payload: res
+                // }
+            }
+        })
+
     })
 
     router.post('/', async (req, res) => {
