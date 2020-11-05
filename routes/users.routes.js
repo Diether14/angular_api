@@ -80,18 +80,42 @@
 
 // module.exports = router
 
-import express from 'express';
+import express, { request } from 'express';
 import user_controller from '../controllers/users.controllers.js';
 import {check} from 'express-validator';
-import validate from '../services/validator.service.js';
+import ValidatorService from '../services/validator.service.js';
 const router = express.Router();
+const validator = new ValidatorService()
 
-router.post('/login', validate([
+router.post('/login', validator.validate([
         check('username')
             .notEmpty().withMessage('The username field is required')
             .isEmail().withMessage('The username field should be an email'),
         check('password')
+            .notEmpty().withMessage('The password field is required')
             .isLength({min: 8}).withMessage('The password field should be atleast 8 characters')
     ]), user_controller.login);
+
+router.get('/web-user', user_controller.getWebUser)
+
+router.post('/register', validator.validate([
+    check('birthdate')
+        .notEmpty().withMessage('The birthdate field is required'),
+    check('gender')
+        .notEmpty().withMessage('The gender field is required'),
+    check('nickname')
+        .notEmpty().withMessage('The nickname field is required')
+        .isLength({min: 8, max:20}).withMessage('The nickname field should be atleast 8 characters and not exceed 20 characters'),
+    check('email')
+        .notEmpty().withMessage('The email field is required')
+        .isLength({min: 8, max:50}).withMessage('The email field should be atleast 8 characters and not exceed 50 characters')
+        .custom(value => {return validator.unique(value, 'users.email')}),
+    check('password')
+        .notEmpty().withMessage('The password field is required')
+        .isLength({min: 8}).withMessage('The password field should be atleast 8 characters')
+        .custom(value => {return validator.strong(value)}),
+    check('confirm_password')
+        .custom((value, {req}) => {return validator.matches(value, {field: 'password' ,value: req})}),
+]), user_controller.register)
 
 export default router;

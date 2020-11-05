@@ -47,4 +47,16 @@ export default class db {
 
         });
     }
+
+    simpleExecute(q, params = {}) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(q, params.binds || {}, (err, res, fields) => {
+                if(err) {
+                    reject(err);
+                }
+                resolve(true);
+            });
+
+        });
+    }
 }

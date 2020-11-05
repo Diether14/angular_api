@@ -1,12 +1,26 @@
 import express from 'express';
 import cors from 'cors';
 import user_routes from './routes/users.routes.js';
+import ExpressSession from 'express-session';
+import { v4 as uuidv4 } from 'uuid';
+
 // const express = require('express'),
 //     cors = require('cors'),
 // require('./config/database.config')
 const version = "v1";
 const port = 3414;
 const app = express();
+const session = new ExpressSession({
+    genid: (req) => {
+      return uuidv4();
+    },
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    name: 'nodaq'
+  });
+
+app.use(session);
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
