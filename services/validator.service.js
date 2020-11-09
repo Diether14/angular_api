@@ -81,6 +81,51 @@ class Validator {
       }
     })
   }
+
+  ownedOrUnique(value, column, pk_field = 'id', req) {
+    return new Promise(async (resolve, reject) => {
+      const database = new db();
+      await database.connect().catch((err) => {
+        console.log("caught", err.message);
+        reject({
+            data: {},
+            code: 500,
+            message: err.message,
+        });
+      });
+
+      const arr = column.split('.');
+      if(arr.length !== 2){
+        reject('Invalid table/column');
+      }
+      const table = arr[0];
+      const field = arr[1];
+      const q = `SELECT * FROM ${table} WHERE ${field} = :value AND ${pk_field} != :pk_value`;
+      const params = {
+          binds: {
+              value: value,
+              pk_value: parseInt(req.params[pk_field])
+          },
+      };
+            database
+                .execute(q, params, true)
+                .then(async (response) => {
+                  if(response.data.length){
+                    reject(`${field} already exists and is owned by another user.`);
+                  } else {
+                    resolve();
+                  }
+                })
+                .catch((err) => {
+                    console.log("caught", err.message);
+                    reject(err.message);
+                })
+                .finally(() => {
+                    database.close();
+                });
+    })
+  }
+
 }
 
 export default Validator;

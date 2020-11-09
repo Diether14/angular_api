@@ -82,10 +82,14 @@
 
 import express, { request } from 'express';
 import user_controller from '../controllers/users.controllers.js';
-import {check} from 'express-validator';
+import {check, param} from 'express-validator';
 import ValidatorService from '../services/validator.service.js';
 const router = express.Router();
 const validator = new ValidatorService()
+
+router.get('/', user_controller.getAll);
+
+router.get('/:id', user_controller.getByID);
 
 router.post('/login', validator.validate([
         check('username')
@@ -99,13 +103,17 @@ router.post('/login', validator.validate([
 router.get('/web-user', user_controller.getWebUser)
 
 router.post('/register', validator.validate([
-    check('birthdate')
-        .notEmpty().withMessage('The birthdate field is required'),
-    check('gender')
-        .notEmpty().withMessage('The gender field is required'),
-    check('nickname')
-        .notEmpty().withMessage('The nickname field is required')
-        .isLength({min: 8, max:20}).withMessage('The nickname field should be atleast 8 characters and not exceed 20 characters'),
+    check('id')
+        .notEmpty().withMessage('The id field is required')
+        .isLength({min: 8, max:20}).withMessage('The id field should be atleast 8 characters and not exceed 20 characters')
+        .custom(value => {return validator.unique(value, 'users.id')}),
+        // check('birthdate')
+    //     .notEmpty().withMessage('The birthdate field is required'),
+    // check('gender')
+    //     .notEmpty().withMessage('The gender field is required'),
+    check('name')
+        .notEmpty().withMessage('The name field is required')
+        .isLength({min: 8, max:20}).withMessage('The name field should be atleast 8 characters and not exceed 20 characters'),
     check('email')
         .notEmpty().withMessage('The email field is required')
         .isLength({min: 8, max:50}).withMessage('The email field should be atleast 8 characters and not exceed 50 characters')
@@ -118,4 +126,30 @@ router.post('/register', validator.validate([
         .custom((value, {req}) => {return validator.matches(value, {field: 'password' ,value: req})}),
 ]), user_controller.register)
 
+router.post('/update/:id_number', validator.validate([
+    param('id_number')
+        .notEmpty().withMessage('Invalid ID Number.'),
+    check('id')
+        .notEmpty().withMessage('The id field is required')
+        .isLength({min: 8, max:20}).withMessage('The id field should be atleast 8 characters and not exceed 20 characters')
+        .custom((value, {req}) => {return validator.ownedOrUnique(value, 'users.id', 'id_number', req)}),
+    check('name')
+        .notEmpty().withMessage('The name field is required')
+        .isLength({min: 8, max:20}).withMessage('The name field should be atleast 8 characters and not exceed 20 characters'),
+    check('email')
+        .notEmpty().withMessage('The email field is required')
+        .isLength({min: 8, max:50}).withMessage('The email field should be atleast 8 characters and not exceed 50 characters')
+        .custom((value, {req}) => {return validator.ownedOrUnique(value, 'users.email', 'id_number', req)}),
+    check('password')
+        .notEmpty().withMessage('The password field is required')
+        .isLength({min: 8}).withMessage('The password field should be atleast 8 characters')
+        .custom(value => {return validator.strong(value)}),
+    check('confirm_password')
+        .custom((value, {req}) => {return validator.matches(value, {field: 'password' ,value: req})}),
+]), user_controller.update)
+
+router.post('/delete/:id_number', validator.validate([
+    param('id_number')
+        .notEmpty().withMessage('Invalid ID number.')
+]), user_controller.delete)
 export default router;
