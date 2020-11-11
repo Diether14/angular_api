@@ -29,4 +29,22 @@ export default {
             res.status(err.code).json(err);
         });
     },
+    
+    create(req, res) {
+        const validated = matchedData(req, { locations: ['body'] });
+        repo.create(validated).then(response => {
+            res.status(response.code).json(response);
+        }).catch(err => {
+            res.status(err.code).json(err);
+        });
+    },
+
+    delete(req, res) {
+        const validated = matchedData(req, { locations: ['params'] });
+        repo.delete(validated).then(response => {
+            res.status(response.code).json(response);
+        }).catch(err => {
+            res.status(err.code).json(err);
+        });
+    },
 }
