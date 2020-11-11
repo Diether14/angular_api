@@ -272,4 +272,52 @@ export default class UserRepository extends Repository {
                 });
         });
     }
+
+    getSettings(user_id) {
+        const q = `SELECT * FROM ${this.model.user_settings_table} where user_id = :user_id`;
+        const params = {
+            binds: {
+                user_id,
+            },
+        };
+        console.log('user: ', user_id);
+        return new Promise(async (resolve, reject) => {
+            const database = new db();
+            await database.connect().catch((err) => {
+                console.log("caught", err.message);
+                reject({
+                    data: {},
+                    code: 500,
+                    message: err.message,
+                });
+            });
+            database
+                .execute(q, params)
+                .then((response) => {
+                    if (!response.data) {
+                        reject({
+                            data: {},
+                            code: 500,
+                            message: "Error fetching settigns. please try again later",
+                        });
+                    }
+                    resolve({
+                        data: response.data,
+                        code: 200,
+                        message: "",
+                    });
+                })
+                .catch((err) => {
+                    console.log("caught", err.message);
+                    reject({
+                        data: {},
+                        code: 500,
+                        message: err.message,
+                    });
+                })
+                .finally(() => {
+                    database.close();
+                });
+        });
+    }
 }

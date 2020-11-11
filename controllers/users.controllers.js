@@ -60,5 +60,21 @@ export default {
         }).catch(err => {
             res.status(err.code).json(err);
         });
+    },
+
+    getSettings(req, res) {
+        if(!req.session.user) {
+            res.status(401).json({
+                message: 'Login required',
+                data: {},
+                code: 401
+            });
+        }
+        const user_id = req.session.user.id_number;
+        user_repository.getSettings(user_id).then(response => {
+            res.status(response.code).json(response);
+        }).catch(err => {
+            res.status(err.code).json(err);
+        });
     }
 }

@@ -89,7 +89,7 @@ const validator = new ValidatorService()
 
 router.get('/', user_controller.getAll);
 
-router.get('/:id', user_controller.getByID);
+router.route('/:id').get(user_controller.getByID);
 
 router.post('/login', validator.validate([
         check('username')
@@ -152,4 +152,5 @@ router.post('/delete/:id_number', validator.validate([
     param('id_number')
         .notEmpty().withMessage('Invalid ID number.')
 ]), user_controller.delete)
+
 export default router;

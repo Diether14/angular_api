@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import user_routes from './routes/users.routes.js';
+import user_settings_routes from './routes/user_settings.routes.js';
 import ExpressSession from 'express-session';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,6 +28,7 @@ app.use(cors())
 
 
 app.use(`/api/${version}/auth`, user_routes)
+app.use(`/api/${version}/user-settings`, user_settings_routes)
 // app.use(`/api/${version}/community`, require('./routes/community.routes'))
 // app.use(`/api/${version}/posts`, require('./routes/posts.routes'))
 // app.use(`/api/${version}/emoticons`, require('./routes/emoticons.routes'))
