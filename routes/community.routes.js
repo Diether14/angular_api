@@ -25,21 +25,9 @@ const express = require('express'),
     router.get('/user/:user_id', async (req, res) => {
         connection.query(`SELECT * FROM community where user_id = '${req.params.user_id}'`, (err, results, fields) => {
             if(err){
-                
-                res.send(err)
-                
-                /* return {
-                    status: 0,
-                    message: "Failed to get user's communities"
-                } */
+                res.send(err).status(403)
             }else{
-                console.log(results)
-                res.json(results)
-                // return {
-                //     status: 1,
-                //     message: "Failed to get user's communities",
-                //     payload: res
-                // }
+                res.json(results).status(400)
             }
         })
 
@@ -58,14 +46,35 @@ const express = require('express'),
         console.log("test")
     })
 
-    // community photos
+    // categories
     router.get('/categories', async (req, res) => {
-        console.log("test")
+        connection.query(`SELECT * FROM community_category`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
     router.get('/categories/:id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
+        connection.query(`SELECT * FROM community_category where id = '${req.params.community_id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
+    })
+
+    router.get('/categories/cid/:community_id', async (req, res) => {
+        connection.query(`SELECT * FROM community_category where community_id = '${req.params.community_id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
     router.post('/categories', async (req, res) => {
@@ -84,13 +93,34 @@ const express = require('express'),
 
     // sub categories
     router.get('/subcategories', async (req, res) => {
-        console.log("test")
+        connection.query(`SELECT * FROM community_category_subclass`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
+    router.get('/subcategories/catid/:category_id', async (req, res) => {
+        connection.query(`SELECT * FROM community_category_subclass`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
+    })  
+
     router.get('/subcategories/:id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
-    })
+        connection.query(`SELECT * FROM community_category_subclass where id = ${req.params.id}`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
+    })  
 
     router.post('/subcategories', async (req, res) => {
         console.log("test")
@@ -108,12 +138,33 @@ const express = require('express'),
 
     // posts
     router.get('/posts', async (req, res) => {
-        console.log("test")
+        connection.query(`SELECT * FROM users_post`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
     router.get('/posts/:id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
+        connection.query(`SELECT * FROM users_post where id = '${req.params.id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
+    })
+
+    router.get('/posts/catid/:category_id', async (req, res) => {
+        connection.query(`SELECT * FROM users_post where category_id = '${req.params.category_id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
     router.post('/posts', async (req, res) => {
@@ -131,8 +182,13 @@ const express = require('express'),
 
     // category settings
     router.get('/category/settings/:id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
+        connection.query(`SELECT * FROM community_ac_settings where id = '${req.params.id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
     router.post('/category/settings', async (req, res) => {
@@ -150,14 +206,24 @@ const express = require('express'),
 
 
     // community users
-    router.get('/users/:com_id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
+    router.get('/users/:userd_id', async (req, res) => {
+        connection.query(`SELECT * FROM users_community where user_id = '${req.params.users_id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
-    router.get('/users/:com_id/:user_id', async (req, res) => {
-        console.log(req.params.id)
-        console.log("test")
+    router.get('/users/cid/:community_id', async (req, res) => {
+        connection.query(`SELECT * FROM users_community where community_id = '${req.params.users_id}'`, (err, results, fields) => {
+            if(err){
+                res.send(err).status(403)
+            }else{
+                res.json(results).status(400)
+            }
+        })
     })
 
     router.post('/users/:com_id/:user_id', async (req, res) => {
