@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import user_routes from './routes/users.routes.js';
+import emoticon_routes from './routes/emoticons.routes.js';
 // const express = require('express'),
 //     cors = require('cors'),
 // require('./config/database.config')
@@ -13,7 +14,7 @@ app.use(cors())
 
 
 app.use(`/api/${version}/auth`, user_routes)
-// app.use(`/api/${version}/community`, require('./routes/community.routes'))
+app.use(`/api/${version}/emoticons`, emoticon_routes)
 // app.use(`/api/${version}/posts`, require('./routes/posts.routes'))
 // app.use(`/api/${version}/emoticons`, require('./routes/emoticons.routes'))
 // app.use(`/api/${version}/notifications`, require('./routes/notifications.routes'))
