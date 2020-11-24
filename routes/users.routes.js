@@ -82,10 +82,10 @@
 
 import express from 'express';
 import user_controller from '../controllers/users.controllers.js';
-import {check} from 'express-validator';
+import validator from 'express-validator';
 import validate from '../services/validator.service.js';
 const router = express.Router();
-
+const {check} = validator;
 router.post('/login', validate([
         check('username')
             .notEmpty().withMessage('The username field is required')

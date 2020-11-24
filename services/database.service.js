@@ -41,7 +41,7 @@ export default class db {
                     reject(err);
                 }
                 resolve({
-                    data: collection ? res : res[0],
+                    data: collection ? res[0] : res,
                 });
             });
 

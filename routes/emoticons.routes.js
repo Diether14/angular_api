@@ -42,19 +42,35 @@
 
 import express from 'express';
 import emoticons_controller from '../controllers/emoticons.controller.js';
-import {check, param} from 'express-validator';
+import validator from 'express-validator';
 import validate from '../services/validator.service.js';
+
+const {check,param} = validator;
 const router = express.Router();
 
 router.get('/', emoticons_controller.index);
 
-router.get('/get-by-id/:id',validate([
+
+router.get('/:id',validate([
     param('id')
         .notEmpty().withMessage('Invalid ID')]),
     emoticons_controller.getByID)
 
-router.get('/users/:id',validate([
+router.get('/users/:users_id',validate([
+    param('users_id')
+        .notEmpty().withMessage('Invalid ID')]),
+    emoticons_controller.getByUserID)
+
+router.post('/', emoticons_controller.newEmoticon);
+
+router.put('/:id',validate([
     param('id')
         .notEmpty().withMessage('Invalid ID')]),
-    emoticons_controller.getByID)
+    emoticons_controller.updateByID)
+
+router.delete('/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    emoticons_controller.deleteByID)
+
 export default router;

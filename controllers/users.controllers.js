@@ -1,5 +1,6 @@
 import UserRepository from '../repositories/user.repository.js';
-import {matchedData} from 'express-validator';
+import validator from 'express-validator';
+const {matchedData} = validator;
 
 const user_repository = new UserRepository();
 
