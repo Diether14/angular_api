@@ -1,6 +1,6 @@
 import Model from './model.js';
-export default class Posts extends Model {
-    table = 'users_post';
+export default class PostReport extends Model {
+    table = 'users_report';
     constructor() {
         super();
     }

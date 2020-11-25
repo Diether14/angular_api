@@ -1,21 +1,22 @@
  import Repository from "./repository.js";
-import  PostCommentsModel from "../models/postcomments.js"
+import  PostReplyModel from "../models/postreply.js"
 import db from "../services/database.service.js";
 
-export default class PostCommentRepository extends Repository {
+export default class PostReplyRepository extends Repository {
     constructor() {
         super();
-        this.model= new PostCommentsModel();
+        this.model= new PostReplyModel();
     }
 
-    async newComment(data){
-        const q = `INSERT INTO ${this.model.table}(user_id,post_id,content) 
-                VALUES (:user_id, :post_id, :content)`;
+    async newReply(data){
+        const q = `INSERT INTO ${this.model.table}(user_id,post_id,comment_id,comment) 
+                VALUES (:user_id, :post_id,:comment_id ,:comment)`;
         const params = {
             binds: {
                 user_id: data.body.user_id,
-                post_id: data.body.post_id,                
-                content: data.body.content,
+                post_id: data.body.post_id,    
+                comment_id: data.body.comment_id,            
+                comment: data.body.comment,
             }
         };
         return new Promise(async (resolve, reject) => {
@@ -34,7 +35,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "new comment created successfully",
+                        message: "new reply created successfully",
                     });
                 })
                 .catch((err) => {
@@ -51,7 +52,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async getCommentByID(data){
+    async getReplyByID(data){
         const q = `SELECT * FROM ${this.model.table} WHERE id = :id`;
         const params = {
             binds: {
@@ -74,7 +75,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comments fetched successfuly.",
+                        message: "replies fetched successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -91,11 +92,11 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async getCommentByPostID(data){
-        const q = `SELECT * FROM ${this.model.table} WHERE post_id = :post_id`;
+    async getReplyByComID(data){
+        const q = `SELECT * FROM ${this.model.table} WHERE comment_id = :comment_id`;
         const params = {
             binds: {
-                post_id: data.post_id
+                comment_id: data.comment_id
             }
         };
         return new Promise(async (resolve, reject) => {
@@ -114,7 +115,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comments fetched successfuly.",
+                        message: "replies fetched successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -131,7 +132,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async getCommentByUserID(data){
+    async getReplyByUserID(data){
         const q = `SELECT * FROM ${this.model.table} WHERE user_id = :user_id`;
         const params = {
             binds: {
@@ -154,7 +155,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "posts fetched successfuly.",
+                        message: "replies fetched successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -171,16 +172,17 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async updateCommentById(id,data){
+    async updateReplyById(id,data){
         const q = `UPDATE ${this.model.table} 
-                SET user_id = :user_id, post_id = :post_id, content = :content
+                SET user_id = :user_id, post_id = :post_id, comment_id = :comment_id , comment = :comment
                 WHERE id = :id`;
         const params = {
             binds: {
                 id: id.id,
                 user_id: data.body.user_id,
                 post_id: data.body.post_id,
-                content: data.body.content
+                comment_id: data.body.comment_id,
+                comment: data.body.comment
             }
         };
         return new Promise(async (resolve, reject) => {
@@ -199,7 +201,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comment updated successfuly.",
+                        message: "relpy updated successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -216,7 +218,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async deleteCommentById(data){
+    async deleteReplyById(data){
         const q = `DELETE FROM ${this.model.table} WHERE id = :id`;
         const params = {
             binds: {
@@ -239,7 +241,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comment deleted successfuly.",
+                        message: "reply deleted successfuly.",
                     });
                 })
                 .catch((err) => {

@@ -1,21 +1,24 @@
  import Repository from "./repository.js";
-import  PostCommentsModel from "../models/postcomments.js"
+import  PostReportModel from "../models/postreport.js"
 import db from "../services/database.service.js";
 
-export default class PostCommentRepository extends Repository {
+export default class PostReportRepository extends Repository {
     constructor() {
         super();
-        this.model= new PostCommentsModel();
+        this.model= new PostReportModel();
     }
 
-    async newComment(data){
-        const q = `INSERT INTO ${this.model.table}(user_id,post_id,content) 
-                VALUES (:user_id, :post_id, :content)`;
+    async newReport(data){
+        const q = `INSERT INTO ${this.model.table}(reported_by_user_id, community_id, post_id, user_id, report_content, report_option_id) 
+                VALUES (:reported_by_user_id, :community_id, :post_id, :user_id, :report_content, :report_option_id)`;
         const params = {
             binds: {
+                reported_by_user_id: data.body.reported_by_user_id,
+                community_id: data.body.community_id,    
+                post_id: data.body.post_id,            
                 user_id: data.body.user_id,
-                post_id: data.body.post_id,                
-                content: data.body.content,
+                report_content: data.body.report_content,
+                report_option_id: data.body.report_option_id
             }
         };
         return new Promise(async (resolve, reject) => {
@@ -34,7 +37,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "new comment created successfully",
+                        message: "new Report created successfully",
                     });
                 })
                 .catch((err) => {
@@ -51,7 +54,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async getCommentByID(data){
+    async getReportByID(data){
         const q = `SELECT * FROM ${this.model.table} WHERE id = :id`;
         const params = {
             binds: {
@@ -74,7 +77,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comments fetched successfuly.",
+                        message: "report fetched successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -91,7 +94,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async getCommentByPostID(data){
+    async getReportByPostID(data){
         const q = `SELECT * FROM ${this.model.table} WHERE post_id = :post_id`;
         const params = {
             binds: {
@@ -114,7 +117,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comments fetched successfuly.",
+                        message: "reports fetched successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -131,7 +134,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async getCommentByUserID(data){
+    async getReportByUserID(data){
         const q = `SELECT * FROM ${this.model.table} WHERE user_id = :user_id`;
         const params = {
             binds: {
@@ -154,7 +157,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "posts fetched successfuly.",
+                        message: "reports fetched successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -171,16 +174,19 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async updateCommentById(id,data){
+    async updateReportById(id,data){
         const q = `UPDATE ${this.model.table} 
-                SET user_id = :user_id, post_id = :post_id, content = :content
+                SET reported_by_user_id =:reported_by_user_id, community_id =:community_id, post_id =:post_id, user_id =:user_id, report_content =:report_content, report_option_id =:report_option_id
                 WHERE id = :id`;
         const params = {
             binds: {
                 id: id.id,
-                user_id: data.body.user_id,
+                reported_by_user_id: data.body.reported_by_user_id,
+                community_id: data.body.community_id,
                 post_id: data.body.post_id,
-                content: data.body.content
+                user_id: data.body.user_id,
+                report_content: data.body.report_content,
+                report_option_id: data.body.report_option_id
             }
         };
         return new Promise(async (resolve, reject) => {
@@ -199,7 +205,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comment updated successfuly.",
+                        message: "relpy updated successfuly.",
                     });
                 })
                 .catch((err) => {
@@ -216,7 +222,7 @@ export default class PostCommentRepository extends Repository {
         });
     }
 
-    async deleteCommentById(data){
+    async deleteReportById(data){
         const q = `DELETE FROM ${this.model.table} WHERE id = :id`;
         const params = {
             binds: {
@@ -239,7 +245,7 @@ export default class PostCommentRepository extends Repository {
                     resolve({
                         data: response.data,
                         code: 200,
-                        message: "comment deleted successfuly.",
+                        message: "Report deleted successfuly.",
                     });
                 })
                 .catch((err) => {

@@ -2,6 +2,9 @@
 import express from 'express';
 import posts_controller from '../controllers/posts.controller.js';
 import comments_controller from '../controllers/postcomments.controller.js'
+import replies_controller from '../controllers/postreplies.controller.js'
+import report_controller from '../controllers/postreports.controller.js'
+import votes_controller from '../controllers/postvotes.controller.js'
 import validator from 'express-validator';
 import validate from '../services/validator.service.js';
 
@@ -61,12 +64,12 @@ router.get('/comments/:id',validate([
 
 router.get('/comments/post/:post_id',validate([
     param('post_id')
-        .notEmpty().withMessage('Invalid ID')]),
+        .notEmpty().withMessage('Invalid Post ID')]),
     comments_controller.getCommentByPostID)
     
 router.get('/comments/users/:user_id',validate([
     param('user_id')
-        .notEmpty().withMessage('Invalid ID')]),
+        .notEmpty().withMessage('Invalid User ID')]),
     comments_controller.getCommentByUserID)
 
 router.post('/comments', comments_controller.newComment);
@@ -83,86 +86,95 @@ router.delete('/comments/:id',validate([
 
 
 
-
-
-
 // comment replies
-// router.get('/comments/replies/:id', async (req, res) => {
-//     console.log("test")
-// })
 
-// router.get('/comments/replies/comments/:comment_id', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/comments/replies/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    replies_controller.getReplyByID)
 
-// router.get('/comments/replies/users/:user_id', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/comments/replies/comments/:comment_id',validate([
+    param('comment_id')
+        .notEmpty().withMessage('Invalid Comment ID')]),
+    replies_controller.getReplyByComID)
 
-// router.post('/comments/replies', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/comments/replies/users/:user_id',validate([
+    param('user_id')
+        .notEmpty().withMessage('Invalid User ID')]),
+    replies_controller.getReplyByUserID)
 
-// router.put('/comments/replies/:id', async (req, res) => {
-//     console.log("test")
-// })
+router.post('/comments/replies', replies_controller.newReply);
 
-// router.delete('/comments/replies/:id', async (req, res) => {
-//     console.log("test")
-// })
+router.put('/comments/replies/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    replies_controller.updateReplyByID)
+
+router.delete('/comments/replies/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    replies_controller.deleteReplyByID)
 
 
-// repots
-// router.get('/reports/:id', async (req, res) => {
-//     console.log("test")
-// })
 
-// router.get('/reports/comments/:comment_id', async (req, res) => {
-//     console.log("test")
-// })
+// reports
 
-// router.get('/reports/users/:user_id', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/reports/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    report_controller.getReportByID)
 
-// router.post('/reports/', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/reports/posts/:post_id',validate([
+    param('post_id')
+        .notEmpty().withMessage('Invalid Post ID')]),
+    report_controller.getReportByPostID)
 
-// router.put('/reports/:id', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/reports/users/:user_id',validate([
+    param('user_id')
+        .notEmpty().withMessage('Invalid User ID')]),
+    report_controller.getReportByUserID)
 
-// router.delete('/reports/:id', async (req, res) => {
-//     console.log("test")
-// })
+router.post('/reports', report_controller.newReport);
+
+router.put('/reports/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    report_controller.updateReportByID)
+
+router.delete('/reports/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    report_controller.deleteReportByID)
+
 
 
 // votes
-// router.get('/votes/:id', async (req, res) => {
-//     console.log("test")
-// })
 
-// router.get('/votes/posts/:post_id', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/votes/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    votes_controller.getVoteByID)
 
-// router.get('/votes/users/:user_id', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/votes/posts/:post_id',validate([
+    param('post_id')
+        .notEmpty().withMessage('Invalid Post ID')]),
+    votes_controller.getVoteByPostID)
 
-// router.post('/votes', async (req, res) => {
-//     console.log("test")
-// })
+router.get('/votes/users/:user_id',validate([
+    param('user_id')
+        .notEmpty().withMessage('Invalid User ID')]),
+    votes_controller.getVoteByUserID)
 
-// router.put('/votes/:id', async (req, res) => {
-//     console.log("test")
-// })
+router.post('/votes', votes_controller.newVote);
 
-// router.delete('/votes/:id', async (req, res) => {
-//     console.log("test")
-// })
+router.put('/votes/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    votes_controller.updateVoteByID)
 
-
+router.delete('/votes/:id',validate([
+    param('id')
+        .notEmpty().withMessage('Invalid ID')]),
+    votes_controller.deleteVoteByID)
 
 export default router

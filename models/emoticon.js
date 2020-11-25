@@ -1,5 +1,5 @@
 import Model from './model.js';
-export default class emoticon extends Model {
+export default class Emoticon extends Model {
     table = 'emoticon_store';
     constructor() {
         super();
