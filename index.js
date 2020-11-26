@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 import cors from 'cors';
 import user_routes from './routes/users.routes.js';
 import emoticon_routes from './routes/emoticons.routes.js';
@@ -10,6 +11,7 @@ const version = "v1";
 const port = 3414;
 const app = express();
 app.use(express.json())
+app.use(helmet)
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
