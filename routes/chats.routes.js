@@ -7,10 +7,11 @@ const {check,param} = validator;
 
 const router  = express.Router()
 
-router.get('/:room_id',validate([
-    param('id')
-        .notEmpty().withMessage('Invalid ID')]),
-        chats_controller.getMessageByRoomID)
+router.get('/room/:room_id',validate([
+    param('room_id')
+        .notEmpty().withMessage('Invalid Room ID')]),
+        chats_controller.getMessageByRoomID);
+
 router.post('/',chats_controller.newMessage);
 
 

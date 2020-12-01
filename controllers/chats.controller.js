@@ -5,11 +5,11 @@ const repo = new ChatRepository();
 
 export default {
 
-    newMessage(req, res) {
+    newMessage(req) {
         repo.newMessage(req).then(response => {            
-            res.status(200).json(response);
+            // res.status(200).json(response);
         }).catch(err => {
-            res.status(500).json(err);
+            // res.status(500).json(err);
         });
     },
 

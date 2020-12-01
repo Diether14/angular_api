@@ -5,6 +5,7 @@ import user_routes from './routes/users.routes.js';
 import emoticon_routes from './routes/emoticons.routes.js';
 import posts_routes from './routes/posts.routes.js'
 import chats_routes from './routes/chats.routes.js'
+import chats_controller from './controllers/chats.controller.js'
 import wss from 'ws';
 // const express = require('express'),
 //     cors = require('cors'),
@@ -13,7 +14,7 @@ const version = "v1";
 const port = 3414;
 const app = express();
 app.use(express.json())
-app.use(helmet())
+app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
@@ -30,6 +31,7 @@ webServer.on('connection', socket=>{
     socket.on('message', message=> {
         // console.log(message)
         console.log(JSON.parse(message));
+        chats_controller.newMessage(JSON.parse(message))
     });
     console.log(webServer)
     socket.on('message',(data)=>{
