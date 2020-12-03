@@ -9,9 +9,9 @@ export default class ChatRepository extends Repository {
     }
     //websocket
     async newMessage(data){
-        console.log(data)
+        // console.log(data)
 
-        if(!data.body.room_id){
+        if(!data.room_id){
             const q =`INSERT INTO ${this.model.table} (uid1, uid2) 
                     SELECT * FROM (SELECT :uid1 AS id1, :uid2 AS id2) AS tmp
                     WHERE NOT EXISTS (
@@ -26,22 +26,9 @@ export default class ChatRepository extends Repository {
             };
             return new Promise(async (resolve, reject) => {
                 const database = new db();
-                await database.connect().catch((err) => {
-                    console.log("caught", err.message);
-                    reject({
-                        data: {},
-                        code: 500,
-                        message: err.message,
-                    });
-                });
+                await database.connect()
                 database
                     .execute(q, params)
-                    .then((response) => {
-                        resolve({
-                            data: response,
-                            code: 200,
-                            message: "new message created successfully",
-                        });
                         const q2 = `INSERT INTO ${this.model.table2}(room_id,message,sender_id) 
                             VALUES (
                                 (SELECT room_id FROM ${this.model.table} WHERE uid1 =:uid1 AND uid2 =:uid2 OR uid2 =:uid1 AND uid2 =:uid1),
@@ -57,31 +44,6 @@ export default class ChatRepository extends Repository {
                         };
                         database
                             .execute(q2, params2)
-                            .then((response) => {
-                                resolve({
-                                    data: response.data,
-                                    code: 200,
-                                    message: "new room and message created successfully",
-                                });
-                            })
-                            .catch((err) => {
-                                console.log("caught", err.message);
-                                reject({
-                                    data: err,
-                                    code: 500,
-                                    message: err.message,
-                                });
-                            })
-
-                    })            
-                    .catch((err) => {
-                        console.log("caught", err.message);
-                        reject({
-                            data: err,
-                            code: 500,
-                            message: err.message,
-                        });
-                    })
                     .finally(() => {
                         database.close();
                     });
@@ -98,31 +60,9 @@ export default class ChatRepository extends Repository {
         };
         return new Promise(async (resolve, reject) => {
             const database = new db();
-            await database.connect().catch((err) => {
-                console.log("caught", err.message);
-                reject({
-                    data: {},
-                    code: 500,
-                    message: err.message,
-                });
-            });
+            await database.connect()
             database
                 .execute(q, params)
-                .then((response) => {
-                    resolve({
-                        data: response.data,
-                        code: 200,
-                        message: "new message created successfully",
-                    });
-                })
-                .catch((err) => {
-                    console.log("caught", err.message);
-                    reject({
-                        data: err,
-                        code: 500,
-                        message: err.message,
-                    });
-                })
                 .finally(() => {
                     database.close();
                 });
@@ -252,6 +192,46 @@ export default class ChatRepository extends Repository {
         
     // }
 
+    async getRoomsByUserID(data){
+        console.log(data.body)
+        const q = `SELECT * FROM ${this.model.table} WHERE uid1 = :uid1 OR uid2 = :uid1`;
+        const params = {
+            binds: {
+                uid1: data.uid1
+            }
+        };
+        return new Promise(async (resolve, reject) => {
+            const database = new db();
+            await database.connect().catch((err) => {
+                console.log("caught", err.message);
+                reject({
+                    data: {},
+                    code: 500,
+                    message: err.message,
+                });
+            });
+            database
+                .execute(q, params)
+                .then((response) => {
+                    resolve({
+                        data: response.data,
+                        code: 200,
+                        message: "rooms fetched successfuly.",
+                    });
+                })
+                .catch((err) => {
+                    console.log("caught", err.message);
+                    reject({
+                        data: {},
+                        code: 500,
+                        message: err.message,
+                    });
+                })
+                .finally(() => {
+                    database.close();
+                });
+        });
+    }
     async getMessageByRoomID(data){
         console.log(data.body)
         const q = `SELECT * FROM ${this.model.table2} WHERE room_id = :room_id`;
