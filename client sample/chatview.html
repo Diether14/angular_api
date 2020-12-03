@@ -3,23 +3,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
     <!-- jQuery and JS bundle w/ Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     
   </head>
-  <body>
+  <body onload="onload()">
     <div class="container-fluid">
       <div class="row">
         <div class="col-2">
-
-
+          Rooms
+          <iframe id="rooms" width="100%" height="500px">
+      
+          </iframe>
         </div>
         <div class="col-10">
           <iframe id="chatbox" width="100%" height="500px">
       
           </iframe>
           <form onSubmit="sendText();return false">
-            ID:<input id="uid1" placeholder="Sample User ID" type="number"></input>
+            Sample User 1 </br>
+            ID:<input id="uid1" placeholder="Sample User ID" type="number" value="1" hidden></input>
             ReceiverID: <input id="uid2" placeholder="Sample Receiver ID" type="number"></input></br>
         
             RoomID: <input id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></input></br>
@@ -42,20 +46,46 @@
 
 var Socket = new WebSocket("ws://localhost:3414/chatws")
 
-function foo() {
-    var result;
+onload=()=>{
+  // alert("test");
+  // getMessages();
+  loadRooms();
+}
 
+
+// function getMessages(room_id){
+//   // alert(room_id);
+//   console.log(room_id)
+// }
+
+ loadRooms=()=> {
+    var result;
+    var currentUser = document.getElementById("uid1").value
     $.ajax({
-        url: '',
+        type: 'GET',
+        url: 'http://localhost:3414/api/v1/chats/rooms/'+currentUser,
         success: function(response) {
-            result = response;
-            // return response; // <- I tried that one as well
+            result = response.data;
+
+            result.forEach(room => {
+              // $('#rooms').contents().find("body").append(`
+              //    <div value=${room.room_id} style="border-style:solid" id="room_item"  ><center> ${room.room_id}</center></div>
+              //   `)
+              $('#rooms').contents().find("body").append(`
+                 <div value=${room.room_id} style="border-style:solid" id="${room.room_id}" onClick =${getMessages(room.room_id)} ><center> ${room.room_id}</center></div>
+                `)
+            });
+            console.log(result);
         }
     });
-
-    return result; // It always returns `undefined`
+    // return result; 
 }
-function sendText() {
+
+getMessages=(room_id)=>{
+  console.log(room_id)
+}
+
+ sendText=()=> {
   // Construct a msg object containing the data the server needs to process the message from the chat client.
   var msg = {
     type: "message",
@@ -74,28 +104,31 @@ function sendText() {
 } 
 
 
-Socket.onmessage = function(event) {
-  var f = document.getElementById("chatbox").contentDocument;
-  var text = "";
-  var msg = JSON.parse(event.data);
-  var time = new Date(msg.date);
-  var timeStr = time.toLocaleTimeString();
+Socket.onmessage = (event)=> {
   
-  switch(msg.type) {
-    case "id":
-      clientID = msg.id;
-      break;
-    case "username":
-      text = "<b>User <em>" + msg.name + "</em> signed in at " + timeStr + "</b><br>";
-      break;
-    case "message":
-      text = "(" + timeStr + ") <b>User" + msg.uid1 + "</b>: " + msg.text + "<br>";
-      break;
-  }
-  
-  if (text.length) {
-    f.write(text);
-    document.getElementById("chatbox").contentWindow.scrollByPages(1);
+  var room_id = document.getElementById("uid1").value
+  if (currentUser===event.data.uid1){
+    var f = document.getElementById("chatbox").contentDocument;
+    var text = "";
+    var msg = JSON.parse(event.data);
+    var time = new Date(msg.date);
+    var timeStr = time.toLocaleTimeString();
+    switch(msg.type) {
+      case "id":
+        clientID = msg.id;
+        break;
+      case "username":
+        text = "<b>User <em>" + msg.name + "</em> signed in at " + timeStr + "</b><br>";
+        break;
+      case "message":
+        text = "(" + timeStr + ") <b>User" + msg.uid1 + "</b>: " + msg.text + "<br>";
+        break;
+    }
+    
+    if (text.length) {
+      f.write(text);
+      document.getElementById("chatbox").contentWindow.scrollByPages(1);
+    }
   }
 };
 
