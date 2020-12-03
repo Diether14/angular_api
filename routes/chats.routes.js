@@ -12,6 +12,11 @@ router.get('/room/:room_id',validate([
         .notEmpty().withMessage('Invalid Room ID')]),
         chats_controller.getMessageByRoomID);
 
+router.get('/rooms/:uid1',validate([
+    param('uid1')
+        .notEmpty().withMessage('Invalid Room ID')]),
+        chats_controller.getRoomsByUserID);
+
 router.post('/',chats_controller.newMessage);
 
 
