@@ -6,10 +6,17 @@ const repo = new ChatRepository();
 export default {
 
     newMessage(req) {
-        repo.newMessage(req).then(response => {            
-            // res.status(200).json(response);
+        repo.newMessage(req)
+    },
+
+    getRoomsByUserID(req, res) {
+        const validated = matchedData(req, { locations: ['params'] });
+        console.log({validated})
+        repo.getRoomsByUserID(validated).then(response => {
+            // req.session.user = response.data;
+            res.status(200).json(response);
         }).catch(err => {
-            // res.status(500).json(err);
+            res.status(500).json(err);
         });
     },
 
