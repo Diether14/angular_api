@@ -7,6 +7,7 @@ import posts_routes from './routes/posts.routes.js'
 import chats_routes from './routes/chats.routes.js'
 import chats_controller from './controllers/chats.controller.js'
 import wss from 'ws';
+import webServer from './services/websocket.service.js'
 // const express = require('express'),
 //     cors = require('cors'),
 // require('./config/database.config')
@@ -17,32 +18,16 @@ app.use(express.json())
 app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+// app.use(wsservice)
 
 
 app.use(`/api/${version}/auth`, user_routes)
 app.use(`/api/${version}/emoticons`, emoticon_routes)
 app.use(`/api/${version}/posts`, posts_routes)
 app.use(`/api/${version}/chats`, chats_routes)
+
 // app.use(`/api/${version}/emoticons`, require('./routes/emoticons.routes'))
 // app.use(`/api/${version}/notifications`, require('./routes/notifications.routes'))
-
-const webServer = new wss.Server({noServer:true, path: "/chatws"});
-webServer.on('connection', socket=>{
-    socket.on('message', message=> {
-        // console.log(message)
-        console.log(JSON.parse(message));
-        chats_controller.newMessage(JSON.parse(message))
-    });
-    console.log(webServer)
-    socket.on('message',(data)=>{
-        webServer.clients.forEach(function each(client){
-            if(client.readyState ===  wss.OPEN){
-                client.send(data)
-            }
-        })
-    })
-});
-
 
 const server = app.listen(port, () => {
     console.log(`server started at port ${port}`)
