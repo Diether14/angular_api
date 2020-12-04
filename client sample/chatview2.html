@@ -23,7 +23,7 @@
           </iframe>
           <form onSubmit="sendText();return false">
             Sample User 1 </br>
-            ID:<input id="uid1" placeholder="Sample User ID" type="number" value="1" hidden></input>
+            ID:<input id="uid1" placeholder="Sample User ID" type="number" value="2" hidden></input>
             ReceiverID: <input id="uid2" placeholder="Sample Receiver ID" type="number"></input></br>
         
             RoomID: <input id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></input></br>
@@ -143,9 +143,9 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
 
 
 Socket.onmessage = (event)=> {
-  
+  console.log(event.data)
   var currentUser = document.getElementById("uid1").value
-  var room_id = document.getElementById("uid1").value
+  // var room_id = document.getElementById("uid1").value
   if (currentUser===event.data.uid1 || currentUser === event.data.uid2){
     var chatbox = document.getElementById("chatbox").contentDocument;
     var text = "";
