@@ -21,12 +21,17 @@
           <iframe id="chatbox" width="100%" height="500px">
       
           </iframe>
+          <form onSubmit="loadRooms();return false">
+            Sample User ID</br>
+            Change Current User ID:<input id="uid1" placeholder="Sample User ID" type="number" value="1" ></input>
+            <input type="submit"></input>
+          </form >
           <form onSubmit="sendText();return false">
-            Sample User 1 </br>
-            ID:<input id="uid1" placeholder="Sample User ID" type="number" value="1" hidden></input>
+            
+            
             ReceiverID: <input id="uid2" placeholder="Sample Receiver ID" type="number"></input></br>
         
-            RoomID: <input id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></input></br>
+            RoomID: <label id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></label></br>
             message:</br><textarea id="text" placeholder="message" type="text" cols="100"></textarea></br>
             <input type="submit"></input>
           </form>
@@ -46,21 +51,11 @@
 
 var Socket = new WebSocket("ws://localhost:3414/chatws")
 
-// onload=()=>{
-//   // alert("test");
-//   // getMessages();
-//   loadRooms();
-// }
-
-
-// function getMessages(room_id){
-//   // alert(room_id);
-//   console.log(room_id)
-// }
-
  loadRooms=()=> {
     var result;
     var currentUser = document.getElementById("uid1").value
+    $('#rooms').contents().find(`body`).contents().remove("div");
+    $('#chatbox').contents().find(`body`).contents().remove();
     $.ajax({
         type: 'GET',
         url: 'http://localhost:3414/api/v1/chats/rooms/'+currentUser,
@@ -86,7 +81,7 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
                     $('#chatbox').contents().find(`body`).contents().remove("br");
                     // chatbox = "";
                     var currentUser = document.getElementById("uid1").value
-                    
+                    document.getElementById("room_id").textContent = this.id
                     $.ajax({
                         type: 'GET',
                         url: 'http://localhost:3414/api/v1/chats/room/'+this.id,
@@ -95,27 +90,33 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
                             getMessage=(room_id)=>{
                               console.log(room_id)
                             }
+                            if(result.length>0){
+                              result.forEach(room => {
+                                if(room.sender_id == currentUser){
+                                  chatbox.write(`<div style="text-align:right"> 
+                                    <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
+                                    (${room.created_at}) <b>User ${room.sender_id} </b>: ${room.message} 
+                                    </div>
+                                    </div></br>`)
+                                }
+                                else{
+                                  chatbox.write(`<div style="text-align:left"> 
+                                    <div style="border-radius:5px;padding:15px;background-color:gray;width:fit-content">
+                                    (${room.created_at}) <b>User ${room.sender_id} </b>: ${room.message} 
+                                    </div>
+                                    </div></br>`)
+                                }
+                                
+                                // chatbox.write(`</br>`)
+                              });
+                            }
+                            else{
+                              chatbox.write(`<div> No messages </div>`)
+                            }
                             
-                            result.forEach(room => {
-                              if(room.sender_id == currentUser){
-                                chatbox.write(`<div style="text-align:right"> 
-                                  <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
-                                  (${room.created_at}) <b>User ${room.sender_id} </b>: ${room.message} 
-                                  </div>
-                                  </div></br>`)
-                              }
-                              else{
-                                chatbox.write(`<div style="text-align:left"> 
-                                  <div style="border-radius:5px;padding:15px;background-color:gray;width:fit-content">
-                                  (${room.created_at}) <b>User ${room.sender_id} </b>: ${room.message} 
-                                  </div>
-                                  </div></br>`)
-                              }
-                              
-                              // chatbox.write(`</br>`)
-                            });
                             
                             console.log(result);
+                            document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
                         }
                     });
             });//end of onclick
@@ -143,36 +144,23 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
 
 
 Socket.onmessage = (event)=> {
-  
+  console.log(event.data)
+
+  var msg = JSON.parse(event.data);
   var currentUser = document.getElementById("uid1").value
   var room_id = document.getElementById("uid1").value
-  if (currentUser===event.data.uid1 || currentUser === event.data.uid2){
-    var chatbox = document.getElementById("chatbox").contentDocument;
-    var text = "";
-    var msg = JSON.parse(event.data);
-    var time = new Date(msg.date);
-    var timeStr = time.toLocaleTimeString();
-    // switch(msg.type) {
-    //   case "id":
-    //     clientID = msg.id;
-    //     break;
-    //   case "username":
-    //     text = "<b>User <em>" + msg.name + "</em> signed in at " + timeStr + "</b><br>";
-    //     break;
-    //   case "message":
-    //     text = "(" + timeStr + ") <b>User" + msg.uid1 + "</b>: " + msg.text + "<br>";
-    //     break;
-    // }
-    
-    if (text.length) {
-      // f.write(text);
-      chatbox.write(`<div style="text-align:right"> 
-      <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
-      (${timeStr}) <b>User ${currentUser} </b>: ${msg} 
-      </div>
-      </div></br>`)
-      document.getElementById("chatbox").contentWindow.scrollByPages(1);
-    }
+  var chatbox = document.getElementById("chatbox").contentDocument;
+  var time = new Date(msg.date);
+  var timeStr = time.toLocaleTimeString();
+  if ( parseInt(currentUser) === parseInt(msg.uid1) || parseInt(currentUser) === parseInt(msg.uid2)){
+    chatbox.write(`<div style="text-align:right"> 
+    <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
+    (${timeStr}) <b>User ${currentUser} </b>: ${msg.text} 
+    </div>
+    </div></br>`)
+    // console.log(document.getElementById("chatbox").contentWindow)
+    document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
+
   }
 };
 
