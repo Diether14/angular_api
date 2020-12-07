@@ -30,4 +30,47 @@ export default {
             res.status(500).json(err);
         });
     },
+
+    getMessageByRoomIDLimit(req, res) {
+        const validated = matchedData(req, { locations: ['params'] });
+        console.log({validated})
+        repo.getMessageByRoomIDLimit(validated).then(response => {
+            // req.session.user = response.data;
+            res.status(200).json(response);
+        }).catch(err => {
+            res.status(500).json(err);
+        });
+    },
+
+    updateMessageByMsgID(req, res) {
+        const validated = matchedData(req, { locations: ['params'] });
+        console.log({validated})
+        repo.updateMessageByMsgID(validated,req).then(response => {
+            // req.session.user = response.data;
+            res.status(200).json(response);
+        }).catch(err => {
+            res.status(500).json(err);
+        });
+    },
+    deleteMessageByMsgID(req, res) {
+        const validated = matchedData(req, { locations: ['params'] });
+        console.log({validated})
+        repo.deleteMessageByMsgID(validated).then(response => {
+            // req.session.user = response.data;
+            res.status(200).json(response);
+        }).catch(err => {
+            res.status(500).json(err);
+        });
+    },
+
+    deleteMessageByRoomID(req, res) {
+        const validated = matchedData(req, { locations: ['params'] });
+        console.log({validated})
+        repo.deleteMessageByRoomID(validated).then(response => {
+            // req.session.user = response.data;
+            res.status(200).json(response);
+        }).catch(err => {
+            res.status(500).json(err);
+        });
+    },
 }
