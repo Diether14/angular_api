@@ -1,5 +1,6 @@
 import express from 'express';
 import chats_controller from '../controllers/chats.controller.js';
+import chatgroups_controller from '../controllers/chatgroups.controller.js'
 import validator from 'express-validator';
 import validate from '../services/validator.service.js';
 
@@ -7,6 +8,7 @@ const {check,param} = validator;
 
 const router  = express.Router()
 
+//one to one
 router.get('/room/:room_id',validate([
     param('room_id')
         .notEmpty().withMessage('Invalid Room ID')]),
@@ -36,5 +38,7 @@ router.delete('/msg/:room_id',validate([
     param('room_id')
         .notEmpty().withMessage('Invalid Room ID')]),
         chats_controller.deleteMessageByRoomID)
-        
+
+//group chat
+router.post('/creategroup',chatgroups_controller.createNewGroup);
 export default router
