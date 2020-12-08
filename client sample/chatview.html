@@ -16,6 +16,10 @@
           <iframe id="rooms" width="100%" height="500px">
       
           </iframe>
+          Groups
+          <iframe id="groups" width="100%" height="500px">
+      
+          </iframe>
         </div>
         <div class="col-10">
           <iframe id="chatbox" width="100%" height="500px">
@@ -23,7 +27,7 @@
           </iframe>
           <form onSubmit="loadRooms();return false">
             Sample User ID</br>
-            Change Current User ID:<input id="uid1" placeholder="Sample User ID" type="number" value="1" ></input>
+            Change Current User ID:<input id="uid1" placeholder="Sample User ID" type="number" value="2" ></input>
             <input type="submit"></input>
           </form >
           <form onSubmit="sendText();return false">
@@ -31,9 +35,14 @@
             
             ReceiverID: <input id="uid2" placeholder="Sample Receiver ID" type="number"></input></br>
         
-            RoomID: <label id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></label></br>
+            RoomID: <input id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></input></br>
             message:</br><textarea id="text" placeholder="message" type="text" cols="100"></textarea></br>
             <input type="submit"></input>
+          </form>
+
+          <form onSubmit="createGroup();return false">
+            
+            <input type="submit" value="CreateGroup"></input>
           </form>
         </div>
       </div>
@@ -51,7 +60,7 @@
 
 var Socket = new WebSocket("ws://localhost:3414/chatws")
 
- loadRooms=()=> {
+loadRooms=()=> {
     var result;
     var currentUser = document.getElementById("uid1").value
     $('#rooms').contents().find(`body`).contents().remove("div");
@@ -81,7 +90,7 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
                     $('#chatbox').contents().find(`body`).contents().remove("br");
                     // chatbox = "";
                     var currentUser = document.getElementById("uid1").value
-                    document.getElementById("room_id").textContent = this.id
+                    document.getElementById("room_id").value = this.id
                     $.ajax({
                         type: 'GET',
                         url: 'http://localhost:3414/api/v1/chats/room/'+this.id,
@@ -124,7 +133,7 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
         }//end of first response
     });
 }
- sendText=()=> {
+sendText=()=> {
   // Construct a msg object containing the data the server needs to process the message from the chat client.
   var msg = {
     type: "message",
@@ -141,8 +150,9 @@ var Socket = new WebSocket("ws://localhost:3414/chatws")
   // Blank the text input element, ready to receive the next line of text from the user.
   document.getElementById("text").value = "";
 } 
+createGroup=()=>{
 
-
+}
 Socket.onmessage = (event)=> {
   console.log(event.data)
 
@@ -152,7 +162,7 @@ Socket.onmessage = (event)=> {
   var chatbox = document.getElementById("chatbox").contentDocument;
   var time = new Date(msg.date);
   var timeStr = time.toLocaleTimeString();
-  if ( parseInt(currentUser) === parseInt(msg.uid1) || parseInt(currentUser) === parseInt(msg.uid2)){
+  if ( parseInt(currentUser) === parseInt(msg.uid1) ){
     chatbox.write(`<div style="text-align:right"> 
     <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
     (${timeStr}) <b>User ${currentUser} </b>: ${msg.text} 
@@ -160,8 +170,15 @@ Socket.onmessage = (event)=> {
     </div></br>`)
     // console.log(document.getElementById("chatbox").contentWindow)
     document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
-
+  }
+  else{
+    chatbox.write(`<div style="text-align:left"> 
+    <div style="border-radius:5px;padding:15px;background-color:gray;display:inline-block">
+    (${timeStr}) <b>User ${currentUser} </b>: ${msg.text} 
+    </div>
+    </div></br>`)
+    // console.log(document.getElementById("chatbox").contentWindow)
+    document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
   }
 };
-
 </script>
