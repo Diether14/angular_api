@@ -13,5 +13,14 @@ export default {
         }).catch(err => {
             res.status(err.code).json(err);
         });
+    },
+    async register(req, res){
+        // const validated = matchedData(req, { locations: ['body'] });
+        user_repository.register(req).then(response => {
+            // req.session.user = response.data;
+            res.status(response.code).json(response);
+        }).catch(err => {
+            res.status(err.code).json(err);
+        });
     }
 }
