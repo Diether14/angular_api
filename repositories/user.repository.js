@@ -60,4 +60,49 @@ export default class UserRepository extends Repository {
                 });
         });
     }
+
+    async register(req) {
+        console.log(req.body)
+        const q = `INSERT INTO ${this.model.table}(name,email,password) values (:name,:email,:password)`;
+        const params = {
+            binds: {
+                name: req.body.name,
+                password: this.password_service.setPassword(req.body.password),
+                email: req.body.email
+            },
+        };
+        return new Promise(async (resolve, reject) => {
+            const database = new db();
+            await database.connect().catch((err) => {
+                console.log("caught", err.message);
+                reject({
+                    data: {},
+                    code: 500,
+                    message: err.message,
+                });
+            });
+            database
+                .execute(q, params)
+                .then((response) => {
+                    resolve({
+                        data: response.data.password,
+                        pw: req.password,
+                        code: 200,
+                        message: "Sucessfuly Registered",
+                        // password: this.password_service.setPassword(req.password)
+                    });
+                })
+                .catch((err) => {
+                    console.log("caught", err.message);
+                    reject({
+                        data: {},
+                        code: 500,
+                        message: err.message,
+                    });
+                })
+                .finally(() => {
+                    database.close();
+                });
+        });
+    }
 }
