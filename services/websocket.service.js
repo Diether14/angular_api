@@ -19,14 +19,16 @@ webServer.on('connection', socket=>{
     console.log(socket.id)
     socket.on('message', message=> {
         socket.on('pong',heartbeat);
-        chats_controller.newMessage(JSON.parse(message))
+        const m =JSON.parse(message)
+        console.log(m[0].type)
+        // chats_controller.newMessage(JSON.parse(message))
     });
     socket.on('message',data=>{
         socket.on('pong',heartbeat);
-        console.log(JSON.parse(data))
+        // console.log(JSON.parse(data))
         webServer.clients.forEach(function each(client){
             if(client.readyState ===  wss.OPEN){
-                client.send(data)
+                // client.send(data)
             }
         })
     })
