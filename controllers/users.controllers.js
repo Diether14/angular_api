@@ -5,6 +5,14 @@ const {matchedData} = validator;
 const user_repository = new UserRepository();
 
 export default {
+        
+    async getUsers(req,res){
+        user_repository.getUsers().then(response => {
+            res.status(response.code).json(response);
+        }).catch(err => {
+            res.status(err.code).json(err);
+        });
+    },
     async login(req, res){
         const validated = matchedData(req, { locations: ['body'] });
         user_repository.login(validated).then(response => {
