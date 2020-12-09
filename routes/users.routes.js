@@ -94,4 +94,5 @@ router.post('/login', validate([
             .isLength({min: 8}).withMessage('The password field should be atleast 8 characters')
     ]), user_controller.login);
 router.post('/register', user_controller.register);
+router.get('/userlist', user_controller.getUsers);
 export default router;
