@@ -10,6 +10,43 @@ export default class UserRepository extends Repository {
         this.password_service = new PasswordService();
     }
 
+    async getUsers(){
+        const q = `SELECT id_number,name FROM ${this.model.table}`;
+        const params = {};
+        return new Promise(async (resolve, reject) => {
+            const database = new db();
+            await database.connect().catch((err) => {
+                console.log("caught", err.message);
+                reject({
+                    data: {},
+                    code: 500,
+                    message: err.message,
+                });
+            });
+            database
+                .execute(q, params)
+                .then((response) => {
+                    resolve({
+                        
+                        data: response.data,
+                        code: 200,
+                        message: "userlist fetched successfuly.",
+                    });
+                })
+                .catch((err) => {
+                    console.log("caught", err.message);
+                    reject({
+                        data: {},
+                        code: 500,
+                        message: err.message,
+                    });
+                })
+                .finally(() => {
+                    database.close();
+                });
+        });
+    }
+
     async login(req) {
         const q = `SELECT * FROM ${this.model.table} where email = :username`;
         const params = {
