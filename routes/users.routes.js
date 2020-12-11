@@ -95,4 +95,5 @@ router.post('/login', validate([
     ]), user_controller.login);
 router.post('/register', user_controller.register);
 router.get('/userlist', user_controller.getUsers);
+
 export default router;
