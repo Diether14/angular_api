@@ -1,6 +1,6 @@
 import express from 'express';
 import chats_controller from '../controllers/chats.controller.js';
-import chatgroups_controller from '../controllers/chatgroups.controller.js'
+// import chatgroups_controller from '../controllers/chatgroups.controller.js'
 import validator from 'express-validator';
 import validate from '../services/validator.service.js';
 
@@ -24,7 +24,7 @@ router.get('/rooms/:uid1',validate([
         .notEmpty().withMessage('Invalid User ID')]),
         chats_controller.getRoomsByUserID);
 
-router.post('/',chats_controller.newMessage);
+// router.post('/',chats_controller.newMessage);
 router.put('/msg/:msg_id',validate([
     param('msg_id')
         .notEmpty().withMessage('Invalid Message ID')]),
@@ -34,11 +34,13 @@ router.delete('/msg/:msg_id',validate([
         .notEmpty().withMessage('Invalid Message ID')]),
         chats_controller.deleteMessageByMsgID)
 
-router.delete('/msg/:room_id',validate([
+router.delete('/msg/room/:room_id',validate([
     param('room_id')
         .notEmpty().withMessage('Invalid Room ID')]),
         chats_controller.deleteMessageByRoomID)
 
 //group chat
-router.post('/creategroup',chatgroups_controller.createNewGroup);
+// router.post('/creategroup',chatgroups_controller.createNewGroup);
+
+
 export default router
