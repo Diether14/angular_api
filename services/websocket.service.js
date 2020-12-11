@@ -1,3 +1,4 @@
+
 import wss from 'ws';
 import chats_controller from '../controllers/chats.controller.js'
 const webServer = new wss.Server({noServer:true, path: "/chatws"});
@@ -20,17 +21,52 @@ webServer.on('connection', socket=>{
     socket.on('message', message=> {
         socket.on('pong',heartbeat);
         const m =JSON.parse(message)
-        console.log(m[0].type)
-        // chats_controller.newMessage(JSON.parse(message))
+        // console.log( m)
+        if(m[0]){
+            if(m[0].type==="newgroup"){
+                chats_controller.createNewGroup(JSON.parse(message))
+                
+                // console.log(m[0].type)
+            }
+        }
+        else{
+            if(m.type ==="message"){
+                // console.log(m)
+                chats_controller.newMessage(JSON.parse(message))
+                if(m.room_id){
+                    const d = new Date();
+                    chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
+                }
+            }
+            else if(m.type==="rooms"){
+                console.log(m)
+            }
+        }
     });
     socket.on('message',data=>{
         socket.on('pong',heartbeat);
-        // console.log(JSON.parse(data))
-        webServer.clients.forEach(function each(client){
-            if(client.readyState ===  wss.OPEN){
-                // client.send(data)
+        const m =JSON.parse(data)
+
+        if(!m[0]){
+            if(m.type ==="message"){
+                webServer.clients.forEach(function each(client){
+                    if(client.readyState ===  wss.OPEN){
+                        // console.log(data)
+                        client.send(data)
+                    }
+                })
             }
-        })
+            if(m.type ==="rooms"){
+                console.log(chats_controller.getRoomsByUserID({"uid1": m.currentUser}))
+                webServer.clients.forEach(function each(client){
+                    if(client.readyState ===  wss.OPEN){
+                        // console.log(data)
+                        client.send(data)
+                    }
+                })
+            }
+        }
+        
     })
 });
 
