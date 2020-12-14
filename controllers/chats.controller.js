@@ -14,35 +14,32 @@ export default {
     updateTime(req) {
         repo.updateTime(req);
     },
-    
+
 
     
-    // getRoomsByUserID(req, res) {
-    //     var a
-    //     // const validated = matchedData(req, { locations: ['params'] });
+    getRoomsByUserID(req, res) {
+        // const validated = matchedData(req, { locations: ['params'] });
+        return new Promise(async (resolve) => {
+            await repo.getRoomsByUserID(req).then(response => {
+                resolve(response)
+                  
+            })
+        })
+
+        // console.log(res)
         
-    //     // console.log({validated})
-    //     repo.getRoomsByUserID(req).then(response => {
-    //         console.log (response)
-    //         // a= response;
+    },
+    //http
+    // getRoomsByUserID(req, res) {
+    //     const validated = matchedData(req, { locations: ['params'] });
+    //     console.log({validated})
+    //     repo.getRoomsByUserID(validated).then(response => {
     //         // req.session.user = response.data;
-    //         // res.status(200).json(response);
+    //         res.status(200).json(response);
     //     }).catch(err => {
     //         res.status(500).json(err);
     //     });
-    //     // console.log(a)
     // },
-    //http
-    getRoomsByUserID(req, res) {
-        const validated = matchedData(req, { locations: ['params'] });
-        console.log({validated})
-        repo.getRoomsByUserID(validated).then(response => {
-            // req.session.user = response.data;
-            res.status(200).json(response);
-        }).catch(err => {
-            res.status(500).json(err);
-        });
-    },
 
     getMessageByRoomID(req, res) {
         const validated = matchedData(req, { locations: ['params'] });
