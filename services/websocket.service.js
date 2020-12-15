@@ -1,6 +1,7 @@
 
 import wss from 'ws';
 import chats_controller from '../controllers/chats.controller.js'
+import chatfile_controller from '../controllers/chatfile.js'
 import fs from 'fs'
 const webServer = new wss.Server({noServer:true, path: "/chatws"});
 
@@ -23,75 +24,60 @@ webServer.on('connection', socket=>{
         socket.on('pong',heartbeat);
         const m =JSON.parse(message)
         // console.log( m)
-        // if(m[0]){
-        //     if(m[0].type==="newgroup"){
-        //         chats_controller.createNewGroup(JSON.parse(message))
+        if(m[0]){
+            if(m[0].type==="newgroup"){
+                chats_controller.createNewGroup(JSON.parse(message))
                 
-        //         // console.log(m[0].type)
-        //     }
-        // }
-        // else{
-        //     if(m.type ==="message"){
-        //         // console.log(m)
-        //         chats_controller.newMessage(JSON.parse(message))
-        //         if(m.room_id){
-        //             const d = new Date();
-        //             chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
-        //         }
-        //     }
-        //     else if(m.type==="rooms"){
-        //         console.log(m)
-        //     }
-        // }
+                // console.log(m[0].type)
+            }
+        }
+        else{
+            if(m.type ==="message"){
+                // chats_controller.newMessage(JSON.parse(message))
+                // if(m.room_id){
+                //     const d = new Date();
+                //     chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
+                // }
+            }
+            else if(m.type==="file"){
+                console.log(m)
+                chatfile_controller.newFile(JSON.parse(message))
+
+            }
+        }
     });
     socket.on('message',data=>{
         socket.on('pong',heartbeat);
-        
-        
-        
-        
-        // // chats_controller.getRoomsByUserID({"uid1":46})
-
-
-            new Promise (async()=>{
-                var test = await chats_controller.getRoomsByUserID({"uid1":45})
-                // .then(res=>{
+        const m =JSON.parse(data)
+        console.log(m)
+        if(!m[0]){
+            if(m.type ==="message"){
+                new Promise (async()=>{
+                    var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
                     const m =[JSON.parse(data)]
-                //  console.log(JSON.stringify(test))
-                   m.push(test.data)
-                   webServer.clients.forEach(function each(client){
-                                if(client.readyState ===  wss.OPEN){
-                                    // console.log(data)
-                                    client.send(JSON.stringify(m))
-                                }
-                            })
-                // });
-                console.log(m)
-             } )
-            // return await test
-        // const test = getRoomsByUserID(m.uid1)
-        
-        // // // m.push("")
-        
-        // if(!m[0]){
-        //     if(m.type ==="message"){
-        //         webServer.clients.forEach(function each(client){
-        //             if(client.readyState ===  wss.OPEN){
-        //                 // console.log(data)
-        //                 client.send(data)
-        //             }
-        //         })
-        //     }
-        //     if(m.type ==="rooms"){
-        //         console.log(chats_controller.getRoomsByUserID({"uid1": m.currentUser}))
-        //         webServer.clients.forEach(function each(client){
-        //             if(client.readyState ===  wss.OPEN){
-        //                 // console.log(data)
-        //                 client.send(data)
-        //             }
-        //         })
-        //     }
-        // }
+                    m.push(test.data)
+                    webServer.clients.forEach(function each(client){
+                        if(client.readyState ===  wss.OPEN){
+                            client.send(JSON.stringify(m))
+                        }
+                    })
+                 } )
+            }
+            if(m.type ==="rooms"){
+                new Promise (async()=>{
+                    // console.log(data)
+                    var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
+                    const m =[JSON.parse(data)]
+                    m.push(test.data)
+                    webServer.clients.forEach(function each(client){
+                        if(client.readyState ===  wss.OPEN){
+                            // console.log(data)
+                            client.send(JSON.stringify(m))
+                        }
+                    })
+                 } )
+            }
+        }
         
     })
 });
