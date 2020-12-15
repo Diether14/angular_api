@@ -33,6 +33,7 @@
         
             RoomID: <input id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></input></br>
             message:</br><textarea id="text" placeholder="message" type="text" cols="100"></textarea></br>
+            <input type="file" id="file"></input>
             <input type="submit"></input>
           </form>
 
@@ -84,7 +85,7 @@
 </html>
 <script>
 
-var Socket = new WebSocket("ws://localhost:3414/chatws")
+var Socket = new WebSocket("ws://localhost:3414/chatws");
 loadUserList=()=>{
     var result;
     $.ajax({
@@ -112,191 +113,125 @@ loadUserList=()=>{
     });
     
 }
-//websocket for rooms?
-// loadRooms=()=> {
-//     var result;
-//     var currentUser = document.getElementById("uid1").value
-//     var room ={
-//       type: "rooms",
-//       currentUser: currentUser
-//     }
-//     $('#rooms').contents().find(`body`).contents().remove("div");
-//     $('#chatbox').contents().find(`body`).contents().remove();
-//     Socket.addEventListener('open',()=>{
-//       Socket.send(JSON.stringify(room));
-//     })
-    
-//     $.ajax({
-//         type: 'GET',
-//         url: 'http://localhost:3414/api/v1/chats/rooms/'+currentUser,
-//         success: function(response) {
-//             result = response.data;
-//             getMessage=(room_id)=>{
-//               console.log(room_id)
-//             }
-//             result.forEach(room => {
-//               // $('#rooms').load(()=>{
-//                 if(room.room_name){
-//                   $('#rooms').contents().find("body").append(`
-//                  <div value=${room.room_id} style="border-style:solid" id= ${room.room_id} > ${room.room_name}</div>
-//                 `)
-//                 }
-//                 else if(room.user_id2!=0){
-//                   $('#rooms').contents().find("body").append(`
-//                   <div value=${room.room_id} style="border-style:solid" id= ${room.room_id} > ${room.name}</div>
-//                   `)
-//                 }
-                
-              
-//             });
+//websocket for rooms
 
-//             $('#rooms').contents().find(`body div`).click(function() {
-//                     selectedRoom(true);
-                    
-//                     // console.log($('#rooms').contents().find('body div#1'))
-//                     var chatbox =document.getElementById("chatbox").contentDocument;
-//                     // console.log(this.id)
-//                     var result;
-//                     $('#chatbox').contents().find(`body`).contents().remove("div");
-//                     $('#chatbox').contents().find(`body`).contents().remove("br");
-//                     // chatbox = "";
-//                     var currentUser = document.getElementById("uid1").value
-//                     document.getElementById("room_id").value = this.id
-//                     $.ajax({
-//                         type: 'GET',
-//                         url: 'http://localhost:3414/api/v1/chats/room/'+this.id,
-//                         success: function(response) {
-//                             result = response.data;
-//                             getMessage=(room_id)=>{
-//                               // console.log(room_id)
-//                             }
-//                             if(result.length>0){
-//                               result.forEach(room => {
-//                                 const d = new Date (room.updated_at)
-//                                 if(room.sender_id == currentUser){
-//                                   chatbox.write(`<div style="text-align:right"> 
-//                                     <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
-//                                      <b>User ${room.sender_id} </b>: ${room.message}  </br> (${ d.toLocaleDateString() +' ' +  d.toLocaleTimeString()})
-//                                     </div>
-//                                     </div></br>`)
-//                                 }
-//                                 else{
-//                                   chatbox.write(`<div style="text-align:left"> 
-//                                     <div style="border-radius:5px;padding:15px;background-color:gray;width:fit-content">
-//                                      <b>User ${room.sender_id} </b>: ${room.message} </br> (${ d.toLocaleDateString() +' ' + d.toLocaleTimeString()})
-//                                     </div>
-//                                     </div></br>`)
-//                                 }
-                                
-//                                 // chatbox.write(`</br>`)
-//                               });
-//                             }
-//                             else{
-//                               chatbox.write(`<div> No messages </div>`)
-//                             }
-                            
-                            
-//                             console.log(result);
-//                             document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
-//                         }
-//                     });
-//             });//end of onclick
-//             console.log(result);
-//         }//end of first response
-//     });
-// }//end of loadrooms
 loadRooms=()=> {
     var result;
     var currentUser = document.getElementById("uid1").value
+    var room ={
+      type: "rooms",
+      currentUser: currentUser
+    }
     $('#rooms').contents().find(`body`).contents().remove("div");
     $('#chatbox').contents().find(`body`).contents().remove();
-    $.ajax({
-        type: 'GET',
-        url: 'http://localhost:3414/api/v1/chats/rooms/'+currentUser,
-        success: function(response) {
-            result = response.data;
-            getMessage=(room_id)=>{
-              console.log(room_id)
-            }
-            result.forEach(room => {
-              // $('#rooms').load(()=>{
-                if(room.room_name){
-                  $('#rooms').contents().find("body").append(`
-                 <div value=${room.room_id} style="border-style:solid" id= ${room.room_id} > ${room.room_name}</div>
-                `)
-                }
-                else if(room.user_id2!=0){
-                  $('#rooms').contents().find("body").append(`
-                  <div value=${room.room_id} style="border-style:solid" id= ${room.room_id} > ${room.name}</div>
-                  `)
-                }
-                
-              
-            });
-
-            $('#rooms').contents().find(`body div`).click(function() {
-                    
-                    // console.log($('#rooms').contents().find('body div#1'))
-                    var chatbox =document.getElementById("chatbox").contentDocument;
-                    console.log(this.id)
-                    var result;
-                    $('#chatbox').contents().find(`body`).contents().remove("div");
-                    $('#chatbox').contents().find(`body`).contents().remove("br");
-                    // chatbox = "";
-                    var currentUser = document.getElementById("uid1").value
-                    document.getElementById("room_id").value = this.id
-                    $.ajax({
-                        type: 'GET',
-                        url: 'http://localhost:3414/api/v1/chats/room/'+this.id,
-                        success: function(response) {
-                            result = response.data;
-                            getMessage=(room_id)=>{
-                              console.log(room_id)
-                            }
-                            if(result.length>0){
-                              result.forEach(room => {
-                                const d = new Date (room.updated_at)
-                                if(room.sender_id == currentUser){
-                                  chatbox.write(`<div style="text-align:right"> 
-                                    <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
-                                     <b>User ${room.sender_id} </b>: ${room.message}  </br> (${ d.toLocaleDateString() +' ' +  d.toLocaleTimeString()})
-                                    </div>
-                                    </div></br>`)
-                                }
-                                else{
-                                  chatbox.write(`<div style="text-align:left"> 
-                                    <div style="border-radius:5px;padding:15px;background-color:gray;width:fit-content">
-                                     <b>User ${room.sender_id} </b>: ${room.message} </br> (${ d.toLocaleDateString() +' ' + d.toLocaleTimeString()})
-                                    </div>
-                                    </div></br>`)
-                                }
-                                
-                                // chatbox.write(`</br>`)
-                              });
-                            }
-                            else{
-                              chatbox.write(`<div> No messages </div>`)
-                            }
-                            
-                            
-                            console.log(result);
-                            document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
-                        }
-                    });
-            });//end of onclick
-            console.log(result);
-        }//end of first response
-    });
+    Socket.addEventListener('open',()=>{
+      Socket.send(JSON.stringify(room));
+    })
+    // console.log(readyState)
+    if(Socket.readyState ===1){
+      Socket.send(JSON.stringify(room));
+    }
+    
 }//end of loadrooms
+
+
+webSocketRoom=(rooms)=>{
+  
+  //clear rooms
+  
+  $('#rooms').contents().find(`body`).contents().remove("div");
+  $('#chatbox').contents().find(`body`).contents().remove();
+  rooms.forEach(room => {
+      // $('#rooms').load(()=>{
+        if(room.room_name){
+          $('#rooms').contents().find("body").append(`
+          <div value=${room.room_id} style="border-style:solid;}" id= ${room.room_id} > ${room.room_name}</div>
+        `)
+        }
+        else if(room.user_id2!=0){
+          $('#rooms').contents().find("body").append(`
+          <div value=${room.room_id} style="border-style:solid" id= ${room.room_id} > ${room.name}</div>
+          `)
+        }
+  });
+  
+  console.log(rooms)
+  $('#rooms').contents().find(`body div`).click(function() {
+        // console.log($('#rooms').contents().find(`body div>${this.id}`))    
+        console.log(this.id)
+        $('#rooms').contents().find(`body div`).attr("style","border-style:solid")
+        $('#rooms').contents().find(`body div#${this.id}`).attr("style","border-style:solid;border-color:blue")
+        var chatbox =document.getElementById("chatbox").contentDocument;
+        // console.log(this.id)
+        var result;
+        $('#chatbox').contents().find(`body`).contents().remove("div");
+        $('#chatbox').contents().find(`body`).contents().remove("br");
+        // chatbox = "";
+        var currentUser = document.getElementById("uid1").value
+        document.getElementById("room_id").value = this.id
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:3414/api/v1/chats/room/'+this.id,
+            success: function(response) {
+                result = response.data;
+                getMessage=(room_id)=>{
+                  // console.log(room_id)
+                }
+                if(result.length>0){
+                  result.forEach(room => {
+                    const d = new Date (room.updated_at)
+                    if(room.sender_id == currentUser){
+                      chatbox.write(`<div style="text-align:right"> 
+                        <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
+                          <b>User ${room.sender_id} </b>: ${room.message}  </br> (${ d.toLocaleDateString() +' ' +  d.toLocaleTimeString()})
+                        </div>
+                        </div></br>`)
+                    }
+                    else{
+                      chatbox.write(`<div style="text-align:left"> 
+                        <div style="border-radius:5px;padding:15px;background-color:gray;width:fit-content">
+                          <b>User ${room.sender_id} </b>: ${room.message} </br> (${ d.toLocaleDateString() +' ' + d.toLocaleTimeString()})
+                        </div>
+                        </div></br>`)
+                    }
+                  });
+                }
+                else{
+                  chatbox.write(`<div> No messages </div>`)
+                }
+                console.log(result);
+                document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
+            }
+            
+        });
+        
+    });//end of onclick
+    $('#rooms').contents().find(`body div:first`).trigger("click")
+    
+}
 sendText=()=> {
-  var msg = {
-    type: "message",
-    text: document.getElementById("text").value,
-    uid1:   document.getElementById("uid1").value,
-    uid2:   document.getElementById("uid2").value,
-    room_id :document.getElementById("room_id").value,
-    date: Date.now()
-  };
+  if(!document.getElementById("file").value){
+    var msg = {
+      type: "message",
+      text: document.getElementById("text").value,
+      uid1:   document.getElementById("uid1").value,
+      uid2:   document.getElementById("uid2").value,
+      room_id :document.getElementById("room_id").value,
+      date: Date.now()
+    };
+  }
+  else{
+    var msg = {
+      type: "file",
+      text: document.getElementById("text").value,
+      file: new Blob(document.getElementById("file").value) ,
+      uid1:   document.getElementById("uid1").value,
+      uid2:   document.getElementById("uid2").value,
+      room_id :document.getElementById("room_id").value,
+      date: Date.now()
+    };
+  }
+  
   Socket.send(JSON.stringify(msg));
   document.getElementById("text").value = "";
 } 
@@ -304,21 +239,16 @@ sendText=()=> {
 
 createGroup=()=>{
   console.log("submitted")
-  // console.log(document.querySelector('#userlist input:checked').value)
-  // var userlist = {id:document.querySelector('#userlist input:checked').value}
   currentUser =document.getElementById("uid1").value
   var userlist = $('#userlist').find("input:checked")
   var idgroup = []
   idgroup.push({id:currentUser})
   userlist.map((test,user)=>{ 
       console.log(user.value)
-      // JSON.stringify("id",)
-      
       var id={
           id: user.value
       }
       idgroup.push(id)
-      // return user
     })
   
   
@@ -329,23 +259,17 @@ createGroup=()=>{
   },idgroup]
 
   Socket.send(JSON.stringify(newgroup))
-  // console.log(JSON.stringify(newgroup))
 }
 Socket.onmessage = (event)=> {
-  console.log(event.data)
-
-  // setTimeout(loadRooms(), 10000)
   
-  var msg = JSON.parse(event.data);
+  var msg = JSON.parse(event.data)[0];
+  var rooms = JSON.parse(event.data)[1]
   var currentUser = document.getElementById("uid1").value
   var room_id = document.getElementById("uid1").value
   var chatbox = document.getElementById("chatbox").contentDocument;
   var time = new Date(msg.date);
   var timeStr = time.toLocaleTimeString();
   var dateStr = time.toLocaleDateString();
-
-
-
   switch(msg.type){
     case 'message':
       if ( parseInt(currentUser) === parseInt(msg.uid1) ){
@@ -367,10 +291,11 @@ Socket.onmessage = (event)=> {
         document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
       }
       break;
-    case 'rooms':
-      console.log("rooms")
-
-    
+    // case 'rooms':
+    //   console.log("rooms")
+  }
+  if(rooms.length>0){
+    this.webSocketRoom(rooms)
   }
   
 };
