@@ -10,66 +10,6 @@ export default class ChatRepository extends Repository {
         this.model2 = new UserModel();
     }
     //websocket
-    // async newMessage(data){
-    //     // console.log(data)
-    //     if(!data.room_id){
-    //         const q =`INSERT INTO ${this.model.table3} (uid1, uid2) 
-    //                 SELECT * FROM (SELECT :uid1 AS id1, :uid2 AS id2) AS tmp
-    //                 WHERE NOT EXISTS (
-    //                     SELECT * FROM ${this.model.table} WHERE uid1 = :uid1 AND uid2 = :uid2 OR uid2 = :uid1 AND uid1 =:uid2
-    //                 );
-    //                 `
-    //         const params = {
-    //             binds: {
-    //                 uid1: data.uid1,
-    //                 uid2: data.uid2
-    //             }
-    //         };
-    //         return new Promise(async (resolve, reject) => {
-    //             const database = new db();
-    //             await database.connect()
-    //             database
-    //                 .execute(q, params)
-    //                     const q2 = `INSERT INTO ${this.model.table2}(room_id,message,sender_id) 
-    //                         VALUES (
-    //                             (SELECT room_id FROM ${this.model.table} WHERE uid1 =:uid1 AND uid2 =:uid2 OR uid2 =:uid1 AND uid2 =:uid1),
-    //                             :message,
-    //                             :sender_id )`;
-    //                     const params2 = {
-    //                         binds: {
-    //                             uid1: data.uid1,
-    //                             uid2: data.uid2,
-    //                             message: data.text,
-    //                             sender_id: data.uid1
-    //                         }
-    //                     };
-    //                     database
-    //                         .execute(q2, params2)
-    //                 .finally(() => {
-    //                     database.close();
-    //                 });
-    //         });
-    //     }
-    //     const q = `INSERT INTO ${this.model.table2}(room_id,message,sender_id) 
-    //         VALUES (:room_id,:message,:sender_id )`;
-    //     const params = {
-    //         binds: {
-    //             room_id: data.room_id,
-    //             message: data.text,
-    //             sender_id: data.uid1
-    //         }
-    //     };
-    //     return new Promise(async (resolve, reject) => {
-    //         const database = new db();
-    //         await database.connect()
-    //         database
-    //             .execute(q, params)
-    //             .finally(() => {
-    //                 database.close();
-    //             });
-    //     });
-    // }
-
     async newMessage(data){
         // console.log(data)
         if(!data.room_id){
@@ -236,7 +176,7 @@ export default class ChatRepository extends Repository {
      `
         const params = {
             binds: {
-                uid: data.uid1
+                uid: data.currentUser
             }
         };
         return new Promise(async (resolve) => {
@@ -258,65 +198,7 @@ export default class ChatRepository extends Repository {
                 });
         });
     }
-    // async getRoomsByUserID(data){
-    //     // console.log(data)
-    //     // const q = `SELECT * FROM ${this.model.table2} 
-    //     // RIGHT JOIN  ${this.model.table} ON ${this.model.table2}.room_id = ${this.model.table}.room_id
-    //     // WHERE user_id = :uid`;
-    //     // const q =`SELECT DISTINCT tb1.room_id,tb1.user_id, tb2.* FROM ${this.model.table2} AS tb1
-    //     //     JOIN  ${this.model.table} AS tb2 ON (tb1.room_id = tb2.room_id)
-            
-    //     //     WHERE user_id = :uid
-    //     //  `
-    //      const q =
-    //      `SELECT DISTINCT *  FROM (
-    //         SELECT tb1.user_id,tb2.*,tb3.name FROM ${this.model.table2} AS tb1
-    //         JOIN  ${this.model.table} AS tb2 ON (tb1.room_id = tb2.room_id)
-    //         LEFT JOIN ${this.model2.table} AS tb3 ON (tb2.user_id2 = tb3.id_number)
-    //         ) AS table1
-    //         WHERE user_id = :uid
-    //         ORDER BY updated_at DESC
-            
-    //      `
-    //     const params = {
-    //         binds: {
-    //             uid: data.uid1
-    //         }
-    //     };
-    //     return new Promise(async (resolve, reject) => {
-    //         const database = new db();
-    //         await database.connect().catch((err) => {
-    //             console.log("caught", err.message);
-    //             reject({
-    //                 data: {},
-    //                 code: 500,
-    //                 message: err.message,
-    //             });
-    //         });
-    //         database
-    //             .execute(q, params)
-    //             .then((response) => {
-    //                 // console.log(response.data)
-    //                 resolve({
-    //                     data: response.data,
-    //                     code: 200,
-    //                     message: "rooms fetched successfuly.",
-    //                 });
-    //                 // return response.data;
-    //             })
-    //             .catch((err) => {
-    //                 console.log("caught", err.message);
-    //                 reject({
-    //                     data: {},
-    //                     code: 500,
-    //                     message: err.message,
-    //                 });
-    //             })
-    //             .finally(() => {
-    //                 database.close();
-    //             });
-    //     });
-    // }
+   
     async getMessageByRoomID(data){
         // console.log(data)
         const q = `SELECT * FROM ${this.model.table3} WHERE room_id = :room_id`;
