@@ -18,8 +18,11 @@
           </iframe>
         </div>
         <div class="col-10">
+          <div id="testdiv">
+            <img id="testimage">
+          </div>
           <iframe id="chatbox" width="100%" height="500px">
-      
+          
           </iframe>
           <form onSubmit="loadRooms();return false">
             Sample User ID</br>
@@ -33,7 +36,7 @@
         
             RoomID: <input id="room_id" placeholder="Sample Room ID if the two user is connected already" type="number"></input></br>
             message:</br><textarea id="text" placeholder="message" type="text" cols="100"></textarea></br>
-            <input type="file" id="file"></input>
+            <input type="file" id="file" onchange="showFile(this)"></input>
             <input type="submit"></input>
           </form>
 
@@ -86,6 +89,8 @@
 <script>
 
 var Socket = new WebSocket("ws://localhost:3414/chatws");
+var FileSocket = new WebSocket("ws://localhost:3414/chatws");
+FileSocket.binaryType="arraybuffer"
 loadUserList=()=>{
     var result;
     $.ajax({
@@ -221,21 +226,71 @@ sendText=()=> {
     };
   }
   else{
-    var msg = {
-      type: "file",
-      text: document.getElementById("text").value,
-      file: new Blob(document.getElementById("file").value) ,
-      uid1:   document.getElementById("uid1").value,
-      uid2:   document.getElementById("uid2").value,
-      room_id :document.getElementById("room_id").value,
-      date: Date.now()
-    };
+    sendFile();
+  //   var msg = {
+  //     type: "file",
+  //     text: document.getElementById("text").value,
+  //     file: document.getElementById("file").value ,
+  //     uid1:   document.getElementById("uid1").value,
+  //     uid2:   document.getElementById("uid2").value,
+  //     room_id :document.getElementById("room_id").value,
+  //     date: Date.now()
+  //   };
   }
   
   Socket.send(JSON.stringify(msg));
   document.getElementById("text").value = "";
 } 
+sendFile=()=> {
 
+var file = document.getElementById('file').files[0];
+var reader = new FileReader();
+var rawData = new ArrayBuffer();            
+reader.loadend = function() {
+}
+reader.onload = (e)=> {
+    rawData = e.target.result;
+    FileSocket.send(rawData);
+    // console.log(rawData)
+}
+reader.readAsArrayBuffer(file);
+}
+
+function readFile(input) {
+  console.log(input.data)
+//   let file = input;
+
+//   let reader = new FileReader();
+
+//   reader.readAsDataURL(file);
+// // console.log(reader)
+//   reader.onload = function() {
+//     console.log(reader.result);
+//   };
+
+//   reader.onerror = function() {
+//     console.log(reader.error);
+//   };
+    // var arrayBufferView = input
+    var arrayBufferView = new Uint8Array( input.data );
+    console.log(arrayBufferView)
+    var blob = new Blob(  [arrayBufferView] , { type: "image/jpeg" } );
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+    var img = document.querySelector( "#imagetest" );
+    // img.src = imageUrl;
+
+    // imageUrl.click();
+    // $('#testdiv').append(`<img src =${imageUrl}>`)
+    console.log(imageUrl)
+}
+
+ showFile=(input)=> {
+  let file = input;
+  // console.log(file)
+  // console.log(`File name: ${file.name}`); // e.g my.png
+  // console.log(`Last modified: ${file.lastModified}`); // e.g 1552830408824
+}
 
 createGroup=()=>{
   console.log("submitted")
@@ -261,42 +316,56 @@ createGroup=()=>{
   Socket.send(JSON.stringify(newgroup))
 }
 Socket.onmessage = (event)=> {
+  // console.log(JSON.parse(event.data))
+  var file = JSON.parse(event.data)
+  // var msg = JSON.parse(event.data)[0];
   
-  var msg = JSON.parse(event.data)[0];
-  var rooms = JSON.parse(event.data)[1]
-  var currentUser = document.getElementById("uid1").value
-  var room_id = document.getElementById("uid1").value
-  var chatbox = document.getElementById("chatbox").contentDocument;
-  var time = new Date(msg.date);
-  var timeStr = time.toLocaleTimeString();
-  var dateStr = time.toLocaleDateString();
-  switch(msg.type){
-    case 'message':
-      if ( parseInt(currentUser) === parseInt(msg.uid1) ){
-        chatbox.write(`<div style="text-align:right"> 
-        <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
-          <b>User ${currentUser} </b>: ${msg.text} </br> (${dateStr + ' '+timeStr})
-        </div>
-        </div></br>`)
-        // console.log(document.getElementById("chatbox").contentWindow)
-        document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
-      }
-      else{
-        chatbox.write(`<div style="text-align:left"> 
-        <div style="border-radius:5px;padding:15px;background-color:gray;display:inline-block">
-          <b>User ${currentUser} </b>: ${msg.text} </br> (${dateStr + ' '+timeStr})
-        </div>
-        </div></br>`)
-        // console.log(document.getElementById("chatbox").contentWindow)
-        document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
-      }
-      break;
-    // case 'rooms':
-    //   console.log("rooms")
+  // var rooms = JSON.parse(event.data)[1]
+  // var currentUser = document.getElementById("uid1").value
+  // var room_id = document.getElementById("uid1").value
+  // var chatbox = document.getElementById("chatbox").contentDocument;
+  // var time = new Date(msg.date);
+  // var timeStr = time.toLocaleTimeString();
+  // var dateStr = time.toLocaleDateString();
+  // switch(msg.type){
+  //   case 'message':
+  //     if ( parseInt(currentUser) === parseInt(msg.uid1) ){
+  //       chatbox.write(`<div style="text-align:right"> 
+  //       <div style="border-radius:5px;padding:15px;background-color:lightblue;display:inline-block">
+  //         <b>User ${currentUser} </b>: ${msg.text} </br> (${dateStr + ' '+timeStr})
+  //       </div>
+  //       </div></br>`)
+  //       // console.log(document.getElementById("chatbox").contentWindow)
+  //       document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
+  //     }
+  //     else{
+  //       chatbox.write(`<div style="text-align:left"> 
+  //       <div style="border-radius:5px;padding:15px;background-color:gray;display:inline-block">
+  //         <b>User ${currentUser} </b>: ${msg.text} </br> (${dateStr + ' '+timeStr})
+  //       </div>
+  //       </div></br>`)
+  //       // console.log(document.getElementById("chatbox").contentWindow)
+  //       document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
+  //     }
+  //     break;
+  //   // case 'rooms':
+  //   //   console.log("rooms")
+  // }
+  // if(rooms.length>0){
+  //   this.webSocketRoom(rooms)
+  // }
+  console.log(file)
+  // chatbox.write(`<div>
+  //   <img src= "data:image/jpeg;base64,${hexToBase64(file)}">
+  //   </div>`)
+  if(file.type=="Buffer"){
+    readFile(file)
   }
-  if(rooms.length>0){
-    this.webSocketRoom(rooms)
-  }
+  
   
 };
+
+// $('#chatbox').prepend($('<img>',{id:'theImg2',src:`data:image/png;base64,${toBase64( selected[0].image2.data)}`}))
+
+
 </script>
