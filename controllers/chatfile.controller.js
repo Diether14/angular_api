@@ -10,9 +10,6 @@ export default{
             await repo.newFile(req).then(response => {
                 resolve(response)
             })
-        })
-
-        // console.log(res)
-        
+        })        
     },
 }
