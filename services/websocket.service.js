@@ -15,16 +15,39 @@ function heartbeat(){
     this.isAlive = true;
 }
 function noop(){}
+webServer.setMaxListeners(15)
 webServer.on('connection', socket=>{
     socket.id = webServer.clientID();
     socket.isAlive =true;
     socket.on('pong',heartbeat);
-    console.log(socket.id)
+    // console.log(socket.id)
     socket.on('message', message=> {
         socket.on('pong',heartbeat);
+        // var test = Object.entries(message) 
         console.log(message)
+        // for (var key in message) {
+        //     if (message.hasOwnProperty(key)) {
+        //       console.log(key); // 'a'
+        //     //   console.log(message[key]); // 'hello'
+        // }}
+        
+        // if(Buffer.isBuffer(message)){
+        //     // const test = message
+        //     // console.log(test);
+        //     chatfile_controller.newFile(message)
+        // }
+        // else if(Buffer.isBuffer(message)===false && message!="undefined"){
+        //     console.log(JSON.parse(message))
+
+        // }
+        
+// console.log(webServer.getMaxListeners());
+        // if (message==="undefined"){
+        //     console.log("this is undefined")
+        // }
+        // console.log(message )
         // const m =JSON.parse(message)
-        // console.log( m)
+        // // console.log( m)
         // if(m[0]){
         //     if(m[0].type==="newgroup"){
         //         chats_controller.createNewGroup(JSON.parse(message))
@@ -80,12 +103,12 @@ webServer.on('connection', socket=>{
         //     }
         // }
         //test
-        webServer.clients.forEach(function each(client){
-            if(client.readyState ===  wss.OPEN){
-                // console.log(data)
-                client.send(JSON.stringify(data))
-            }
-        })
+        // webServer.clients.forEach(function each(client){
+        //     if(client.readyState ===  wss.OPEN){
+        //         // console.log(data)
+        //         client.send(JSON.stringify(data))
+        //     }
+        // })
     })
 });
 
