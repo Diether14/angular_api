@@ -5,9 +5,8 @@ import user_routes from './routes/users.routes.js';
 import emoticon_routes from './routes/emoticons.routes.js';
 import posts_routes from './routes/posts.routes.js'
 import chats_routes from './routes/chats.routes.js'
-import chats_controller from './controllers/chats.controller.js'
-import wss from 'ws';
 import webServer from './services/websocket.service.js'
+
 // const express = require('express'),
 //     cors = require('cors'),
 // require('./config/database.config')
@@ -18,8 +17,9 @@ app.use(express.json())
 app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-// app.use(wsservice)
 
+
+// app.use(wsservice)
 
 app.use(`/api/${version}/auth`, user_routes)
 app.use(`/api/${version}/emoticons`, emoticon_routes)
