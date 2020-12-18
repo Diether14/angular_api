@@ -90,7 +90,7 @@
 
 var Socket = new WebSocket("ws://localhost:3414/chatws");
 var FileSocket = new WebSocket("ws://localhost:3414/chatws");
-// FileSocket.binaryType="arraybuffer"
+FileSocket.binaryType="arraybuffer"
 loadUserList=()=>{
     var result;
     $.ajax({
@@ -121,6 +121,7 @@ loadUserList=()=>{
 //websocket for rooms
 
 loadRooms=()=> {
+    loadFile();
     var result;
     var currentUser = document.getElementById("uid1").value
     var room ={
@@ -244,30 +245,53 @@ sendText=()=> {
 sendFile=()=> {
 
 var file = document.getElementById('file').files[0];
-// console.log(file)
 var reader = new FileReader();
 var rawData = new ArrayBuffer();
-var fileData = {
-    type: file.type,
-    file_name:  file.name,
-    room_id: document.getElementById('room_id').value,
-    sender_id: document.getElementById("uid1").value,
-    date: Date.now()
-
-}            
 reader.loadend = function() {
 }
 reader.onload = (e)=> {
-    rawData = e.target.result;
-    console.log(rawData + fileData)
-
-
-    FileSocket.send(rawData);
-    // Socket.send(JSON.stringify(fileData))
+    rawData = e.target.result; 
+    saveFile(file,rawData);
+    // FileSocket.send(rawData)
     // console.log(rawData)
 }
 reader.readAsArrayBuffer(file);
 // reader.readAsArrayBuffer(fileData)
+}
+
+saveFile=(file,rawData)=>{
+  console.log(rawData)
+  var fileData = {
+        type: file.type,
+        file_name:  file.name,
+        file: JSON.stringify(Array.from(new Uint8Array(rawData))),
+        file_size: file.size,
+        room_id: document.getElementById('room_id').value,
+        sender_id: document.getElementById("uid1").value,
+        date: Date.now() 
+  }
+
+  $.ajax({
+      type: 'POST',
+      url: 'http://localhost:3414/api/v1/chats/file/',
+      data: fileData,
+      success: function(response) {
+          console.log(response)
+      }
+      
+  });
+}
+
+loadFile=()=>{
+  $.ajax({
+      type: 'GET',
+      url: 'http://localhost:3414/api/v1/chats/file/12',
+      success: function(response) {
+        console.log(response)
+          // readFile(response.data)
+      }
+      
+  });
 }
 
 readFile=(input)=>{
@@ -303,12 +327,14 @@ createGroup=()=>{
   Socket.send(JSON.stringify(newgroup))
 }
 Socket.onmessage = (event)=> {
-  // console.log(JSON.parse(event.data))
+  console.log(event.data)
   var file = JSON.parse(event.data)
 
   if(file.type=="Buffer"){
     readFile(file)
   }
+
+
   var msg = JSON.parse(event.data)[0];
   
   var rooms = JSON.parse(event.data)[1]
