@@ -23,21 +23,39 @@ webServer.on('connection', socket=>{
     // console.log(socket.id)
     socket.on('message', message=> {
         socket.on('pong',heartbeat);
-        // var test = Object.entries(message) 
-        console.log(message)
+        // console.log(message);
+        // const test = buffer.toString(message) 
+        // console.log(test)
+
         // for (var key in message) {
         //     if (message.hasOwnProperty(key)) {
         //       console.log(key); // 'a'
         //     //   console.log(message[key]); // 'hello'
         // }}
         
-        // if(Buffer.isBuffer(message)){
-        //     // const test = message
-        //     // console.log(test);
-        //     chatfile_controller.newFile(message)
-        // }
+        if(Buffer.isBuffer(message)){
+            // const test = message
+            // console.log(test);
+            var readstr= fs.readFile(message)
+            console.log(readstr)
+            // new Promise (async()=>{
+            // var file = await chatfile_controller.newFile(message)
+            // var newFile={
+            //     type:"file",
+            //     id: file.data.insertId
+            // }
+            
+            // console.log(file)
+            // webServer.clients.forEach(function each(client){
+            //     if(client.readyState ===  wss.OPEN){
+            //         client.send(JSON.stringify(newFile))
+            //     }
+            // })
+            // } )
+            
+        }
         // else if(Buffer.isBuffer(message)===false && message!="undefined"){
-        //     console.log(JSON.parse(message))
+        //     console.log(typeof JSON.parse(message).file)
 
         // }
         
@@ -103,12 +121,12 @@ webServer.on('connection', socket=>{
         //     }
         // }
         //test
-        // webServer.clients.forEach(function each(client){
-        //     if(client.readyState ===  wss.OPEN){
-        //         // console.log(data)
-        //         client.send(JSON.stringify(data))
-        //     }
-        // })
+        webServer.clients.forEach(function each(client){
+            if(client.readyState ===  wss.OPEN){
+                // console.log(data)
+                client.send(JSON.stringify(data))
+            }
+        })
     })
 });
 
