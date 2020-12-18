@@ -1,6 +1,6 @@
 import express from 'express';
 import chats_controller from '../controllers/chats.controller.js';
-// import chatgroups_controller from '../controllers/chatgroups.controller.js'
+import chatfile_controller from '../controllers/chatfile.controller.js'
 import validator from 'express-validator';
 import validate from '../services/validator.service.js';
 
@@ -39,6 +39,11 @@ router.delete('/msg/room/:room_id',validate([
         .notEmpty().withMessage('Invalid Room ID')]),
         chats_controller.deleteMessageByRoomID)
 
+router.post('/file',chatfile_controller.newFileHttp)
+router.get('/file/:chatfid',validate([
+    param('chatfid')
+        .notEmpty().withMessage('Invalid User ID')]),
+        chatfile_controller.getFileByID);
 //group chat
 // router.post('/creategroup',chatgroups_controller.createNewGroup);
 
