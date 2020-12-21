@@ -23,37 +23,26 @@ webServer.on('connection', socket=>{
     // console.log(socket.id)
     socket.on('message', message=> {
         socket.on('pong',heartbeat);
-        // console.log(message);
-        // const test = buffer.toString(message) 
-        // console.log(test)
-
-        // for (var key in message) {
-        //     if (message.hasOwnProperty(key)) {
-        //       console.log(key); // 'a'
-        //     //   console.log(message[key]); // 'hello'
-        // }}
+        console.log(message);
         
-        if(Buffer.isBuffer(message)){
-            // const test = message
-            // console.log(test);
-            var readstr= fs.readFile(message)
-            console.log(readstr)
-            // new Promise (async()=>{
-            // var file = await chatfile_controller.newFile(message)
-            // var newFile={
-            //     type:"file",
-            //     id: file.data.insertId
-            // }
+        // if(Buffer.isBuffer(message)){
             
-            // console.log(file)
-            // webServer.clients.forEach(function each(client){
-            //     if(client.readyState ===  wss.OPEN){
-            //         client.send(JSON.stringify(newFile))
-            //     }
-            // })
-            // } )
+        //     new Promise (async()=>{
+        //     var file = await chatfile_controller.newFile(message)
+        //     var newFile={
+        //         type:"file",
+        //         id: file.data.insertId
+        //     }
             
-        }
+        //     console.log(file)
+        //     webServer.clients.forEach(function each(client){
+        //         if(client.readyState ===  wss.OPEN){
+        //             client.send(JSON.stringify(newFile))
+        //         }
+        //     })
+        //     } )
+            
+        // }
         // else if(Buffer.isBuffer(message)===false && message!="undefined"){
         //     console.log(typeof JSON.parse(message).file)
 
@@ -64,29 +53,34 @@ webServer.on('connection', socket=>{
         //     console.log("this is undefined")
         // }
         // console.log(message )
-        // const m =JSON.parse(message)
+        const m =JSON.parse(message)
         // // console.log( m)
-        // if(m[0]){
-        //     if(m[0].type==="newgroup"){
-        //         chats_controller.createNewGroup(JSON.parse(message))
+        if(m[0]){
+            if(m[0].type==="newgroup"){
+                chats_controller.createNewGroup(JSON.parse(message))
                 
-        //         // console.log(m[0].type)
-        //     }
-        // }
-        // else{
-        //     if(m.type ==="message"){
-        //         // chats_controller.newMessage(JSON.parse(message))
-        //         // if(m.room_id){
-        //         //     const d = new Date();
-        //         //     chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
-        //         // }
-        //     }
-        //     else if(m.type==="file"){
-        //         // console.log(m)
-        //         // chatfile_controller.newFile(JSON.parse(message))
+                // console.log(m[0].type)
+            }
+        }
+        else{
+            if(m.type ==="message"){
+                chats_controller.newMessage(JSON.parse(message))
+                if(m.room_id){
+                    const d = new Date();
+                    chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
+                }
+            }
+            else if(m.type==="file"){
+                chatfile_controller.newMessageFile(JSON.parse(message))
+                if(m.room_id){
+                    const d = new Date();
+                    chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
+                }
+                // console.log(m)
+                // chatfile_controller.newFile(JSON.parse(message))
 
-        //     }
-        // }
+            }
+        }
     });
     socket.on('message',data=>{
         socket.on('pong',heartbeat);
@@ -121,12 +115,6 @@ webServer.on('connection', socket=>{
         //     }
         // }
         //test
-        webServer.clients.forEach(function each(client){
-            if(client.readyState ===  wss.OPEN){
-                // console.log(data)
-                client.send(JSON.stringify(data))
-            }
-        })
     })
 });
 
