@@ -1,19 +1,24 @@
 import Repository from "./repository.js";
-import ChatModel from '../models/chat.js'
+import ChatGroupsModel from '../models/chatgroups.js'
+import ChatMessagesModel from '../models/chatmessages.js'
+import ChatParticipantsModel from '../models/chatparticipants.js'
 import UserModel from '../models/user.js'
 import db from "../services/database.service.js";
 
 export default class ChatRepository extends Repository {
     constructor() {
         super();
-        this.model = new ChatModel();
-        this.model2 = new UserModel();
+        this.model1 = new ChatGroupsModel();
+        this.model2 = new ChatParticipantsModel();
+        this.model3 = new ChatMessagesModel();
+        this.model4 = new UserModel();
+
     }
     //websocket
     async newMessage(data){
         // console.log(data)
         if(!data.room_id){
-            const q = `INSERT INTO ${this.model.table} (creator_id,type,user_id2)
+            const q = `INSERT INTO ${this.model1.table} (creator_id,type,user_id2)
                 VALUES (:creator_id,:type,:uid2);`;
             const params = {
                 binds: {
@@ -33,14 +38,14 @@ export default class ChatRepository extends Repository {
                         console.log(response.data)
                         const newgroupid = response.data.insertId;
                         
-                        const u1 = `INSERT INTO ${this.model.table2} (room_id,user_id) VALUES (:room_id,:uid)`
+                        const u1 = `INSERT INTO ${this.model2.table} (room_id,user_id) VALUES (:room_id,:uid)`
                         const p1 ={
                             binds:{
                                 room_id: newgroupid,
                                 uid: data.uid1
                             }
                         }
-                        const u2 = `INSERT INTO ${this.model.table2} (room_id,user_id) VALUES (:room_id,:uid)`
+                        const u2 = `INSERT INTO ${this.model2.table} (room_id,user_id) VALUES (:room_id,:uid)`
                         const p2 ={
                             binds:{
                                 room_id: newgroupid,
@@ -50,7 +55,7 @@ export default class ChatRepository extends Repository {
                         database.execute(u1,p1)
                         database.execute(u2,p2)
 
-                        const q = `INSERT INTO ${this.model.table3}(room_id,message,sender_id) 
+                        const q = `INSERT INTO ${this.model3.table}(room_id,message,sender_id) 
                             VALUES (:room_id,:message,:sender_id )`;
                         const params = {
                             binds: {
@@ -74,7 +79,7 @@ export default class ChatRepository extends Repository {
                     });
             });
         }
-        const q = `INSERT INTO ${this.model.table3}(room_id,message,sender_id) 
+        const q = `INSERT INTO ${this.model3.table}(room_id,message,sender_id) 
             VALUES (:room_id,:message,:sender_id )`;
         const params = {
             binds: {
@@ -96,7 +101,7 @@ export default class ChatRepository extends Repository {
 
     async createNewGroup(data){
         // console.log(data[0].group_name)
-        const q = `INSERT INTO ${this.model.table} (room_name, creator_id,type)
+        const q = `INSERT INTO ${this.model1.table} (room_name, creator_id,type)
             VALUES (:group_name, :creator_id, :type);`;
         const params = {
             binds: {
@@ -118,7 +123,7 @@ export default class ChatRepository extends Repository {
                     
                     data[1].forEach(uid => {
                         console.log(uid)
-                        const q2 =`INSERT INTO ${this.model.table2} (room_id,user_id) VALUES (:room_id, :uid)`
+                        const q2 =`INSERT INTO ${this.model2.table} (room_id,user_id) VALUES (:room_id, :uid)`
                         const params2 = {
                             binds:{
                                 room_id: newgroupid,
@@ -138,7 +143,7 @@ export default class ChatRepository extends Repository {
     }
     async updateTime(data){
         console.log(data)
-        const q = `UPDATE  ${this.model.table} SET updated_at  =:curtime
+        const q = `UPDATE  ${this.model1.table} SET updated_at  =:curtime
             WHERE room_id =:room_id`;
         const params = {
             binds: {
@@ -166,9 +171,9 @@ export default class ChatRepository extends Repository {
 
          const q =
         `SELECT DISTINCT *  FROM (
-        SELECT tb1.user_id,tb2.*,tb3.name FROM ${this.model.table2} AS tb1
-        JOIN  ${this.model.table} AS tb2 ON (tb1.room_id = tb2.room_id)
-        LEFT JOIN ${this.model2.table} AS tb3 ON (tb2.user_id2 = tb3.id_number)
+        SELECT tb1.user_id,tb2.*,tb3.name FROM ${this.model2.table} AS tb1
+        JOIN  ${this.model1.table} AS tb2 ON (tb1.room_id = tb2.room_id)
+        LEFT JOIN ${this.model4.table} AS tb3 ON (tb2.user_id2 = tb3.id_number)
         ) AS table1
         WHERE user_id = :uid
         ORDER BY updated_at DESC
@@ -201,7 +206,7 @@ export default class ChatRepository extends Repository {
    
     async getMessageByRoomID(data){
         // console.log(data)
-        const q = `SELECT * FROM ${this.model.table3} WHERE room_id = :room_id`;
+        const q = `SELECT * FROM ${this.model3.table} WHERE room_id = :room_id`;
         const params = {
             binds: {
                 room_id: data.room_id
@@ -243,7 +248,7 @@ export default class ChatRepository extends Repository {
     async getMessageByRoomIDLimit(data){
         // console.log(data)
         const q = `SELECT * FROM (
-            SELECT * FROM ${this.model.table3} WHERE room_id = :room_id ORDER BY created_at DESC LIMIT :limit) AS tb1 
+            SELECT * FROM ${this.model3.table} WHERE room_id = :room_id ORDER BY created_at DESC LIMIT :limit) AS tb1 
             ORDER BY created_at ASC
             `;
         const params = {
@@ -287,7 +292,7 @@ export default class ChatRepository extends Repository {
 
     async updateMessageByMsgID(id,data){
         // console.log(data.body)
-        const q = `UPDATE ${this.model.table3} 
+        const q = `UPDATE ${this.model3.table} 
         SET  message = :message
         WHERE msg_id = :msg_id`;
         const params = {
@@ -331,7 +336,7 @@ export default class ChatRepository extends Repository {
 
     async deleteMessageByMsgID(data){
         // console.log(data.body)
-        const q = `DELETE FROM ${this.model.table3} 
+        const q = `DELETE FROM ${this.model3.table} 
         WHERE msg_id = :msg_id`;
         const params = {
             binds: {
@@ -373,7 +378,7 @@ export default class ChatRepository extends Repository {
 
     async deleteMessageByRoomID(data){
         // console.log(data.body)
-        const q = `DELETE FROM ${this.model.table3} 
+        const q = `DELETE FROM ${this.model3.table} 
         WHERE room_id = :room_id`;
         const params = {
             binds: {
