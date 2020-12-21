@@ -42,7 +42,7 @@ router.delete('/msg/room/:room_id',validate([
 router.post('/file',chatfile_controller.newFileHttp)
 router.get('/file/:chatfid',validate([
     param('chatfid')
-        .notEmpty().withMessage('Invalid User ID')]),
+        .notEmpty().withMessage('Invalid File ID')]),
         chatfile_controller.getFileByID);
 //group chat
 // router.post('/creategroup',chatgroups_controller.createNewGroup);
