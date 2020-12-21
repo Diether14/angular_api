@@ -14,8 +14,6 @@ export default {
     updateTime(req) {
         repo.updateTime(req);
     },
-
-
     
     getRoomsByUserID(req, res) {
         // const validated = matchedData(req, { locations: ['params'] });
