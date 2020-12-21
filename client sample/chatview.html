@@ -133,7 +133,6 @@ loadRooms=()=> {
     Socket.addEventListener('open',()=>{
       Socket.send(JSON.stringify(room));
     })
-    // console.log(readyState)
     if(Socket.readyState ===1){
       Socket.send(JSON.stringify(room));
     }
@@ -163,12 +162,11 @@ webSocketRoom=(rooms)=>{
   
   console.log(rooms)
   $('#rooms').contents().find(`body div`).click(function() {
-        // console.log($('#rooms').contents().find(`body div>${this.id}`))    
         console.log(this.id)
         $('#rooms').contents().find(`body div`).attr("style","border-style:solid")
         $('#rooms').contents().find(`body div#${this.id}`).attr("style","border-style:solid;border-color:blue")
         var chatbox =document.getElementById("chatbox").contentDocument;
-        // console.log(this.id)
+       
         var result;
         $('#chatbox').contents().find(`body`).contents().remove("div");
         $('#chatbox').contents().find(`body`).contents().remove("br");
@@ -181,7 +179,7 @@ webSocketRoom=(rooms)=>{
             success: function(response) {
                 result = response.data;
                 getMessage=(room_id)=>{
-                  // console.log(room_id)
+                 
                 }
                 if(result.length>0){
                   result.forEach(room => {
@@ -205,7 +203,7 @@ webSocketRoom=(rooms)=>{
                 else{
                   chatbox.write(`<div> No messages </div>`)
                 }
-                console.log(result);
+             
                 document.getElementById("chatbox").contentWindow.scrollTo(0,999999);
             }
             
@@ -224,22 +222,15 @@ sendText=()=> {
       uid2:   document.getElementById("uid2").value,
       room_id :document.getElementById("room_id").value,
       date: Date.now()
+      
     };
+    Socket.send(JSON.stringify(msg));
   }
   else{
     sendFile();
-  //   var msg = {
-  //     type: "file",
-  //     text: document.getElementById("text").value,
-  //     file: document.getElementById("file").value ,
-  //     uid1:   document.getElementById("uid1").value,
-  //     uid2:   document.getElementById("uid2").value,
-  //     room_id :document.getElementById("room_id").value,
-  //     date: Date.now()
-  //   };
   }
   
-  Socket.send(JSON.stringify(msg));
+  
   document.getElementById("text").value = "";
 } 
 sendFile=()=> {
@@ -253,14 +244,13 @@ reader.onload = (e)=> {
     rawData = e.target.result; 
     saveFile(file,rawData);
     // FileSocket.send(rawData)
-    // console.log(rawData)
 }
 reader.readAsArrayBuffer(file);
 // reader.readAsArrayBuffer(fileData)
 }
 
 saveFile=(file,rawData)=>{
-  console.log(rawData)
+  
   var fileData = {
         type: file.type,
         file_name:  file.name,
@@ -271,32 +261,47 @@ saveFile=(file,rawData)=>{
         date: Date.now() 
   }
 
+
   $.ajax({
       type: 'POST',
       url: 'http://localhost:3414/api/v1/chats/file/',
       data: fileData,
       success: function(response) {
-          console.log(response)
+        var msg = {
+          type: "file",
+          text: document.getElementById("text").value,
+          uid1:   document.getElementById("uid1").value,
+          uid2:   document.getElementById("uid2").value,
+          chatf_id: response.data.insertId,
+          room_id :document.getElementById("room_id").value,
+          date: Date.now()
+        };
+        Socket.send(JSON.stringify(msg))
+          loadFile(response.data.insertId)
       }
       
   });
 }
 
-loadFile=()=>{
+loadFile=(fileid)=>{
   $.ajax({
       type: 'GET',
-      url: 'http://localhost:3414/api/v1/chats/file/12',
+      url: 'http://localhost:3414/api/v1/chats/file/'+fileid,
       success: function(response) {
-        console.log(response)
-          // readFile(response.data)
+        var res = JSON.parse(response)
+        console.log(res)
+        var buffer = res.data[0].file
+        readFile(buffer)
       }
       
   });
 }
 
 readFile=(input)=>{
-    var arrayBufferView = new Uint8Array( input.data );
-    console.log(arrayBufferView)
+    console.log(input)
+    var arrayBufferView = new Uint8Array(input.data).buffer;
+    // var arrayBufferView =  input
+    // console.log(arrayBufferView)
     var blob = new Blob(  [arrayBufferView] , { type: "image/jpeg" } );
     var urlCreator = window.URL || window.webkitURL;
     var imageUrl = urlCreator.createObjectURL( blob );
