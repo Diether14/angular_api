@@ -18,11 +18,11 @@ function noop(){}
 webServer.setMaxListeners(15)
 webServer.on('connection', socket=>{
     socket.id = webServer.clientID();
-    socket.isAlive =true;
-    socket.on('pong',heartbeat);
-    // console.log(socket.id)
+    // socket.isAlive =true;
+    // socket.on('pong',heartbeat);
+    console.log(socket.id)
     socket.on('message', message=> {
-        socket.on('pong',heartbeat);
+        // socket.on('pong',heartbeat);
         console.log(message);
         
         // if(Buffer.isBuffer(message)){
@@ -54,7 +54,7 @@ webServer.on('connection', socket=>{
         // }
         // console.log(message )
         const m =JSON.parse(message)
-        // // console.log( m)
+        console.log( m)
         if(m[0]){
             if(m[0].type==="newgroup"){
                 chats_controller.createNewGroup(JSON.parse(message))
@@ -83,38 +83,45 @@ webServer.on('connection', socket=>{
         }
     });
     socket.on('message',data=>{
-        socket.on('pong',heartbeat);
-        // const m =JSON.parse(data)
-        // console.log(m)
-        // if(!m[0]){
-        //     if(m.type ==="message"){
-        //         new Promise (async()=>{
-        //             var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
-        //             const m =[JSON.parse(data)]
-        //             m.push(test.data)
-        //             webServer.clients.forEach(function each(client){
-        //                 if(client.readyState ===  wss.OPEN){
-        //                     client.send(JSON.stringify(m))
-        //                 }
-        //             })
-        //          } )
-        //     }
-        //     if(m.type ==="rooms"){
-        //         new Promise (async()=>{
-        //             // console.log(data)
-        //             var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
-        //             const m =[JSON.parse(data)]
-        //             m.push(test.data)
-        //             webServer.clients.forEach(function each(client){
-        //                 if(client.readyState ===  wss.OPEN){
-        //                     // console.log(data)
-        //                     client.send(JSON.stringify(m))
-        //                 }
-        //             })
-        //          } )
-        //     }
-        // }
+        // socket.on('pong',heartbeat);
+        console.log(data)
+        const m =JSON.parse(data)
+        console.log(m)
+        if(!m[0]){
+            if(m.type ==="message"){
+                new Promise (async()=>{
+                    var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
+                    const m =[JSON.parse(data)]
+                    m.push(test.data)
+                    webServer.clients.forEach(function each(client){
+                        if(client.readyState ===  wss.OPEN){
+                            client.send(JSON.stringify(m))
+                        }
+                    })
+                 } )
+            }
+        }
+        if(m.type ==="rooms"){
+            new Promise (async()=>{
+                // console.log(data)
+                var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
+                const m =[JSON.parse(data)]
+                m.push(test.data)
+                webServer.clients.forEach(function each(client){
+                    if(client.readyState ===  wss.OPEN){
+                        // console.log(data)
+                        client.send(JSON.stringify(m))
+                    }
+                })
+             } )
+        }
         //test
+        // webServer.clients.forEach(function each(client){
+        //     if(client.readyState ===  wss.OPEN){
+        //         // console.log(data)
+        //         client.send(JSON.stringify(data))
+        //     }
+        // })
     })
 });
 
