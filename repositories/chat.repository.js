@@ -244,6 +244,48 @@ export default class ChatRepository extends Repository {
                 });
         });
     }
+    async getParticipantsByRoomID(data){
+        // console.log(data)
+        const q = `SELECT tb1.*, tb2.name FROM ${this.model2.table} tb1
+        LEFT JOIN ${this.model4.table} tb2 on tb1.user_id = tb2.id_number
+        WHERE room_id = :room_id`;
+        const params = {
+            binds: {
+                room_id: data.room_id
+            }
+        };
+        return new Promise(async (resolve, reject) => {
+            const database = new db();
+            await database.connect().catch((err) => {
+                console.log("caught", err.message);
+                reject({
+                    data: {},
+                    code: 500,
+                    message: err.message,
+                });
+            });
+            database
+                .execute(q, params)
+                .then((response) => {
+                    resolve({
+                        data: response.data,
+                        code: 200,
+                        message: "participants fetched successfuly.",
+                    });
+                })
+                .catch((err) => {
+                    console.log("caught", err.message);
+                    reject({
+                        data: {},
+                        code: 500,
+                        message: err.message,
+                    });
+                })
+                .finally(() => {
+                    database.close();
+                });
+        });
+    }
 
     async getMessageByRoomIDLimit(data){
         // console.log(data)
