@@ -8,7 +8,6 @@ const {check,param} = validator;
 
 const router  = express.Router()
 
-//one to one
 router.get('/room/:room_id',validate([
     param('room_id')
         .notEmpty().withMessage('Invalid Room ID')]),
@@ -23,6 +22,11 @@ router.get('/rooms/:uid1',validate([
     param('uid1')
         .notEmpty().withMessage('Invalid User ID')]),
         chats_controller.getRoomsByUserID);
+
+router.get('/participants/:room_id',validate([
+    param('room_id')
+        .notEmpty().withMessage('Invalid Room ID')]),
+        chats_controller.getParticipantsByRoomID);
 
 // router.post('/',chats_controller.newMessage);
 router.put('/msg/:msg_id',validate([
@@ -44,8 +48,6 @@ router.get('/file/:chatfid',validate([
     param('chatfid')
         .notEmpty().withMessage('Invalid File ID')]),
         chatfile_controller.getFileByID);
-//group chat
-// router.post('/creategroup',chatgroups_controller.createNewGroup);
 
 
 export default router
