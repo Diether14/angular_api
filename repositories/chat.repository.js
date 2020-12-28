@@ -206,7 +206,9 @@ export default class ChatRepository extends Repository {
    
     async getMessageByRoomID(data){
         // console.log(data)
-        const q = `SELECT * FROM ${this.model3.table} WHERE room_id = :room_id`;
+        const q = `SELECT tb1.*,tb2.name FROM ${this.model3.table} tb1
+        LEFT JOIN ${this.model4.table} tb2 on tb1.sender_id = tb2.id_number
+        WHERE room_id = :room_id`;
         const params = {
             binds: {
                 room_id: data.room_id
