@@ -67,21 +67,23 @@ export default class UserRepository extends Repository {
             database
                 .execute(q, params)
                 .then((response) => {
-                    if(!this.password_service.comparePassword(req.password, response.data.password)){
+                    if(!this.password_service.comparePassword(req.password, response.data[0].password)){
                         reject({
                             data: {},
                             code: 401,
                             message: 'Incorrect Password',
                             response,
-                        pw: req.password,
+                        // pw: req.password,
                     });
                     }
                     resolve({
-                        data: response.data.password,
-                        pw: req.password,
+
+                        // data: response.data[0].password,
+                        // pw: req.password,
                         code: 200,
+                        id:response.data[0].id_number,
                         message: "Sucessfuly Logged in",
-                        password: this.password_service.setPassword(req.password)
+                        // password: this.password_service.setPassword(req.password)
                     });
                 })
                 .catch((err) => {
@@ -93,7 +95,7 @@ export default class UserRepository extends Repository {
                     });
                 })
                 .finally(() => {
-                    this.database.close();
+                    database.close();
                 });
         });
     }
