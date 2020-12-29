@@ -2,12 +2,16 @@ import mysql from 'mysql';
 
 export default class db {
     constructor() {
-        this.connection = mysql.createConnection({
+        this.dbcon ={
             host: 'localhost',
             user: 'root',
             password: '',
             database: 'weendi'
-        });
+        }
+        this.connection = mysql.createConnection(this.dbcon);
+    }
+    getCon(){
+        return this.dbcon;
     }
 
     connect() {
