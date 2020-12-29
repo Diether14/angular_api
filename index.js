@@ -6,17 +6,29 @@ import emoticon_routes from './routes/emoticons.routes.js';
 import posts_routes from './routes/posts.routes.js'
 import chats_routes from './routes/chats.routes.js'
 import webServer from './services/websocket.service.js'
-
+import session from 'express-session'
+import randomSecret from 'crypto-random-string'
+import ems from 'express-mysql-session'
+import db from './services/database.service.js'
 // const express = require('express'),
 //     cors = require('cors'),
 // require('./config/database.config')
 const version = "v1";
 const port = 3414;
 const app = express();
+const optn = new db()
+// const MYSQLStore = ems(session)
 app.use(express.json())
 app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+console.log(optn.getCon())
+
+app.use(session({
+    secret:  randomSecret({length: 17, type: 'base64'}),
+    // store: sessionStorage,
+    saveUninitialized:true,resave:true}))
+
 
 
 // app.use(wsservice)
