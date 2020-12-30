@@ -14,10 +14,22 @@ export default {
         });
     },
     async login(req, res){
+
+        // console.log(req.session)
         const validated = matchedData(req, { locations: ['body'] });
         user_repository.login(validated).then(response => {
             // req.session.user = response.data;
-            res.status(response.code).json(response);
+            req.session.regenerate(function(err) {
+                // will have a new session here
+                const sess= req.session
+                sess.cookie.id = response.id
+                sess.cookie.name= response.name 
+                sess.cookie.sessionID=req.sessionID
+                // response.sessionID = req.sessionID
+                console.log(sess.cookie)
+                res.status(response.code).json(response);
+            })
+            
         }).catch(err => {
             res.status(err.code).json(err);
         });
