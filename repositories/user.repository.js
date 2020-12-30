@@ -82,6 +82,7 @@ export default class UserRepository extends Repository {
                         // pw: req.password,
                         code: 200,
                         id:response.data[0].id_number,
+                        name:response.data[0].name,
                         message: "Sucessfuly Logged in",
                         // password: this.password_service.setPassword(req.password)
                     });
