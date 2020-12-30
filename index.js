@@ -6,38 +6,22 @@ import emoticon_routes from './routes/emoticons.routes.js';
 import posts_routes from './routes/posts.routes.js'
 import chats_routes from './routes/chats.routes.js'
 import webServer from './services/websocket.service.js'
-import session from 'express-session'
-import randomSecret from 'crypto-random-string'
-import ems from 'express-mysql-session'
-import db from './services/database.service.js'
-// const express = require('express'),
-//     cors = require('cors'),
-// require('./config/database.config')
+
 const version = "v1";
 const port = 3414;
 const app = express();
-const optn = new db()
-// const MYSQLStore = ems(session)
 app.use(express.json())
 app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-console.log(optn.getCon())
-
-app.use(session({
-    secret:  randomSecret({length: 17, type: 'base64'}),
-    // store: sessionStorage,
-    saveUninitialized:true,resave:true}))
+// console.log(optn.getCon())
 
 
-
-// app.use(wsservice)
 
 app.use(`/api/${version}/auth`, user_routes)
 app.use(`/api/${version}/emoticons`, emoticon_routes)
 app.use(`/api/${version}/posts`, posts_routes)
 app.use(`/api/${version}/chats`, chats_routes)
-
 // app.use(`/api/${version}/emoticons`, require('./routes/emoticons.routes'))
 // app.use(`/api/${version}/notifications`, require('./routes/notifications.routes'))
 
@@ -46,6 +30,7 @@ const server = app.listen(port, () => {
 })
 
 server.on('upgrade', (request,socket,head)=>{
+    console.log(request)
     webServer.handleUpgrade(request,socket,head,socket =>{
         webServer.emit('connection',socket, request);
     });
