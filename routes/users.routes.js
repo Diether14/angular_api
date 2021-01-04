@@ -105,6 +105,7 @@ router.use(session({
         saveUninitialized:true,
         resave:false
     }))
+
 router.post('/login', validate([
         check('username')
             .notEmpty().withMessage('The username field is required')
@@ -114,5 +115,6 @@ router.post('/login', validate([
     ]), user_controller.login);
 router.post('/register', user_controller.register);
 router.get('/userlist', user_controller.getUsers);
+router.post('/logout',user_controller.logout);
 
 export default router;
