@@ -30,7 +30,6 @@ const server = app.listen(port, () => {
 })
 
 server.on('upgrade', (request,socket,head)=>{
-    console.log(request)
     webServer.handleUpgrade(request,socket,head,socket =>{
         webServer.emit('connection',socket, request);
     });
