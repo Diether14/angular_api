@@ -14,21 +14,26 @@ export default {
         });
     },
     async login(req, res){
-
+        
         // console.log(req.session)
         const validated = matchedData(req, { locations: ['body'] });
         user_repository.login(validated).then(response => {
             // req.session.user = response.data;
-            req.session.regenerate(function(err) {
+            // req.session.regenerate(function(err) {
                 // will have a new session here
+                console.log(req.rawHeaders);
                 const sess= req.session
                 sess.cookie.id = response.id
                 sess.cookie.name= response.name 
                 sess.cookie.sessionID=req.sessionID
                 // response.sessionID = req.sessionID
-                console.log(sess.cookie)
-                res.status(response.code).json(response);
-            })
+                console.log(sess)
+                res.setHeader('Set-Cookie',['sessionID',sess.cookie.sessionID]);
+                // console.log()
+                // res.writeHead(response.code).json(response)
+                res.status(response.code).json(sess.cookie.sessionID);
+                
+            // })
             
         }).catch(err => {
             res.status(err.code).json(err);
@@ -42,5 +47,9 @@ export default {
         }).catch(err => {
             res.status(err.code).json(err);
         });
+    },
+    async logout(req,res){
+        console.log(req)
+        // req.session
     }
 }
