@@ -84,34 +84,11 @@ import express from 'express';
 import user_controller from '../controllers/users.controllers.js';
 import validator from 'express-validator';
 import validate from '../services/validator.service.js';
-// import db from '../services/database.service.js'
-// import session from 'express-session'
-// import randomSecret from 'crypto-random-string'
-// import ems from 'express-mysql-session'
-// import MySQLStore from 'express-mysql-session';
-import mysql from 'mysql'
 import user_session from '../services/session.service.js'
-const expire = 60*2000
-// const optn = new db()
-// const sessionStore = MySQLStore(session)
 
-// const sessStore = new sessionStore({expiration:expire},mysql.createPool( optn.getCon()))
 const router = express.Router();
 const {check} = validator;
 router.use(user_session)
-// router.use(session({
-//         secret: 'ZGVmYXVsdHNlY3JldA==',
-//         store: sessStore,
-//         cookie: {
-//             httpOnly: true,
-//             secure: false,
-//             sameSite: true,
-//             maxAge: expire, // Time is in miliseconds
-//             expires: new Date(Date.now()+expire)
-//         },
-//         saveUninitialized:true,
-//         resave:false
-//     }))
 router.post('/login', validate([
         check('username')
             .notEmpty().withMessage('The username field is required')
