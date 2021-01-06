@@ -7,7 +7,7 @@ import posts_routes from './routes/posts.routes.js'
 import chats_routes from './routes/chats.routes.js'
 import webServer from './services/websocket.service.js'
 import cookieParser from 'cookie-parser'
-import user_session from './services/session.service.js'
+import user_session from './services/session.service.js';
 
 const version = "v1";
 const port = 3414;
@@ -17,7 +17,7 @@ app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({credentials: true, origin: 'http://localhost:4200'}))
-app.use(user_session);
+app.use(user_session)
 // console.log(optn.getCon())
 
 
