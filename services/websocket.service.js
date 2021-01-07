@@ -3,6 +3,8 @@ import wss from 'ws';
 import chats_controller from '../controllers/chats.controller.js'
 import chatfile_controller from '../controllers/chatfile.controller.js'
 import fs from 'fs'
+import { parse } from 'path';
+
 const webServer = new wss.Server({noServer:true, path: "/chatws"});
 
 webServer.clientID = ()=>{
@@ -14,6 +16,17 @@ webServer.clientID = ()=>{
 function heartbeat(){
     this.isAlive = true;
 }
+function parseCookies (cookie) {
+    var list = {},
+        rc = cookie;
+
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+
+    return list;
+}
 function noop(){}
 webServer.setMaxListeners(15)
 webServer.on('connection', socket=>{
@@ -24,29 +37,29 @@ webServer.on('connection', socket=>{
     socket.on('message', message=> {
         // socket.on('pong',heartbeat);
         console.log(message);
-        
-        // if(Buffer.isBuffer(message)){
+        // console.log()
+        if(Buffer.isBuffer(message)){
             
-        //     new Promise (async()=>{
-        //     var file = await chatfile_controller.newFile(message)
-        //     var newFile={
-        //         type:"file",
-        //         id: file.data.insertId
-        //     }
+            new Promise (async()=>{
+            var file = await chatfile_controller.newFile(message)
+            var newFile={
+                type:"file",
+                id: file.data.insertId
+            }
             
-        //     console.log(file)
-        //     webServer.clients.forEach(function each(client){
-        //         if(client.readyState ===  wss.OPEN){
-        //             client.send(JSON.stringify(newFile))
-        //         }
-        //     })
-        //     } )
+            console.log(file)
+            webServer.clients.forEach(function each(client){
+                if(client.readyState ===  wss.OPEN){
+                    client.send(JSON.stringify(newFile))
+                }
+            })
+            } )
             
-        // }
-        // else if(Buffer.isBuffer(message)===false && message!="undefined"){
-        //     console.log(typeof JSON.parse(message).file)
+        }
+        else if(Buffer.isBuffer(message)===false && message!="undefined"){
+            console.log(typeof JSON.parse(message).file)
 
-        // }
+        }
         
 // console.log(webServer.getMaxListeners());
         // if (message==="undefined"){
@@ -84,12 +97,18 @@ webServer.on('connection', socket=>{
     });
     socket.on('message',data=>{
         // socket.on('pong',heartbeat);
-        console.log(data)
+        
+        const cookie=socket.reqHead.cookie
+        // console.log(cookie)
+        var user =parseCookies(cookie)
+        console.log(user['id'])
+        // console.log(data)
         const m =JSON.parse(data)
         console.log(m)
         if(!m[0]){
             if(m.type ==="message"){
                 new Promise (async()=>{
+                    // data.push("test")
                     var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
                     const m =[JSON.parse(data)]
                     m.push(test.data)
@@ -104,9 +123,11 @@ webServer.on('connection', socket=>{
         if(m.type ==="rooms"){
             new Promise (async()=>{
                 // console.log(data)
-                var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
+                const newdata = JSON.parse(data)
+                newdata["currentUser"]=user["id"]
+                var rooms = await chats_controller.getRoomsByUserID(newdata)
                 const m =[JSON.parse(data)]
-                m.push(test.data)
+                m.push(rooms.data)
                 webServer.clients.forEach(function each(client){
                     if(client.readyState ===  wss.OPEN){
                         // console.log(data)
@@ -134,8 +155,12 @@ const interval = setInterval(function ping(){
     });
 },30000)
 
+webServer.on('request',function (req){
+    console.log(req)
+    
+})
 webServer.on('close',function close(){
-    clearInterval(interval);
+    // clearInterval(interval);
 })
 
 export default webServer
