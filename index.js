@@ -35,6 +35,8 @@ const server = app.listen(port, () => {
 
 server.on('upgrade', (request,socket,head)=>{
     webServer.handleUpgrade(request,socket,head,socket =>{
+        // console.log(request.headers)
+        socket.reqHead = request.headers
         webServer.emit('connection',socket, request);
     });
 });
