@@ -1,9 +1,12 @@
 import UserRepository from '../repositories/user.repository.js';
 import validator from 'express-validator';
+// import cryptoService from '../services/crypto.service.js'
+
+import cryptoService from '../services/crypto.service.js'
 const {matchedData} = validator;
 
 const user_repository = new UserRepository();
-
+// const crypto = new cryptoService; 
 export default {
        
     async getUsers(req,res){
@@ -16,10 +19,12 @@ export default {
     async login(req, res){
 
         // console.log(req)
-        console.log(req.session)
+        // console.log(req)
+
         const validated = matchedData(req, { locations: ['body'] });
         user_repository.login(validated).then(response => {
-
+            // const test = crypto.encrypt(response.id)
+            // console.log(test)
             req.session.regenerate(function(err) {
                 const sess= req.session
                 sess.cookie.id = response.id
@@ -32,7 +37,11 @@ export default {
                 res.status(response.code)
                     .cookie('isLogin',1)
                     .cookie('nm',response.name)
+                    .cookie('id',response.id)
                     .json(response)
+            })
+            req.session.save(function (err) {
+                
             })
             
         }).catch(err => {
