@@ -1,4 +1,5 @@
 import Repository from "./repository.js";
+import CryptoService from "../services/crypto.service.js";
 import ChatGroupsModel from '../models/chatgroups.js'
 import ChatMessagesModel from '../models/chatmessages.js'
 import ChatParticipantsModel from '../models/chatparticipants.js'
@@ -12,6 +13,7 @@ export default class ChatRepository extends Repository {
         this.model2 = new ChatParticipantsModel();
         this.model3 = new ChatMessagesModel();
         this.model4 = new UserModel();
+        this.crypto = new CryptoService();
 
     }
     //websocket
@@ -168,7 +170,8 @@ export default class ChatRepository extends Repository {
     }
 
     async getRoomsByUserID(data){
-
+        this.crypto.decrypt(data.currentUser)
+        // console.log("uid: "+test)
          const q =
         `SELECT DISTINCT *  FROM (
         SELECT tb1.user_id,tb2.*,tb3.name FROM ${this.model2.table} AS tb1
@@ -181,7 +184,7 @@ export default class ChatRepository extends Repository {
      `
         const params = {
             binds: {
-                uid: data.currentUser
+                uid: this.crypto.decrypt(data.currentUser) 
             }
         };
         return new Promise(async (resolve) => {
