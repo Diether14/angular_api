@@ -2,12 +2,14 @@ import Repository from "./repository.js";
 import UserModel from "../models/user.js";
 import db from "../services/database.service.js";
 import PasswordService from "../services/password.service.js";
+import CryptoService from "../services/crypto.service.js";
 
 export default class UserRepository extends Repository {
     constructor() {
         super();
         this.model = new UserModel();
         this.password_service = new PasswordService();
+        this.crypto = new CryptoService();
     }
 
     async getUsers(){
@@ -81,7 +83,7 @@ export default class UserRepository extends Repository {
                         // data: response.data[0].password,
                         // pw: req.password,
                         code: 200,
-                        id:response.data[0].id_number,
+                        id: this.crypto.encrypt(response.data[0].id_number),
                         name:response.data[0].name,
                         message: "Sucessfuly Logged in",
                         // password: this.password_service.setPassword(req.password)
