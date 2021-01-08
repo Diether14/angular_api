@@ -35,9 +35,10 @@ webServer.on('connection', socket=>{
     // socket.on('pong',heartbeat);
     console.log(socket.id)
     socket.on('message', message=> {
-        // socket.on('pong',heartbeat);
+        
+        const cookie=socket.reqHead.cookie
+        var user =parseCookies(cookie)
         console.log(message);
-        // console.log()
         if(Buffer.isBuffer(message)){
             
             new Promise (async()=>{
@@ -60,12 +61,6 @@ webServer.on('connection', socket=>{
             console.log(typeof JSON.parse(message).file)
 
         }
-        
-// console.log(webServer.getMaxListeners());
-        // if (message==="undefined"){
-        //     console.log("this is undefined")
-        // }
-        // console.log(message )
         const m =JSON.parse(message)
         console.log( m)
         if(m[0]){
@@ -77,7 +72,9 @@ webServer.on('connection', socket=>{
         }
         else{
             if(m.type ==="message"){
-                chats_controller.newMessage(JSON.parse(message))
+                const newdata = JSON.parse(message)
+                newdata["sender_id"]=user["id"]
+                chats_controller.newMessage(JSON.parse(newdata))
                 if(m.room_id){
                     const d = new Date();
                     chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
@@ -99,25 +96,23 @@ webServer.on('connection', socket=>{
         // socket.on('pong',heartbeat);
         
         const cookie=socket.reqHead.cookie
-        // console.log(cookie)
         var user =parseCookies(cookie)
-        console.log(user['id'])
-        // console.log(data)
         const m =JSON.parse(data)
         console.log(m)
         if(!m[0]){
             if(m.type ==="message"){
-                new Promise (async()=>{
-                    // data.push("test")
-                    var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
-                    const m =[JSON.parse(data)]
-                    m.push(test.data)
-                    webServer.clients.forEach(function each(client){
-                        if(client.readyState ===  wss.OPEN){
-                            client.send(JSON.stringify(m))
-                        }
-                    })
-                 } )
+                console.log(data)
+                // new Promise (async()=>{
+                //     // data.push("test")
+                //     var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
+                //     const m =[JSON.parse(data)]
+                //     m.push(test.data)
+                //     webServer.clients.forEach(function each(client){
+                //         if(client.readyState ===  wss.OPEN){
+                //             client.send(JSON.stringify(m))
+                //         }
+                //     })
+                //  } )
             }
         }
         if(m.type ==="rooms"){
@@ -125,6 +120,7 @@ webServer.on('connection', socket=>{
                 // console.log(data)
                 const newdata = JSON.parse(data)
                 newdata["currentUser"]=user["id"]
+                // console.log(newdata)
                 var rooms = await chats_controller.getRoomsByUserID(newdata)
                 const m =[JSON.parse(data)]
                 m.push(rooms.data)
