@@ -3,12 +3,9 @@ import chats_controller from '../controllers/chats.controller.js';
 import chatfile_controller from '../controllers/chatfile.controller.js'
 import validator from 'express-validator';
 import validate from '../services/validator.service.js';
-import user_session from '../services/session.service.js';
-
 const {check,param} = validator;
 
 const router  = express.Router()
-router.use(user_session)
 router.get('/room/:room_id',validate([
     param('room_id')
         .notEmpty().withMessage('Invalid Room ID')]),
