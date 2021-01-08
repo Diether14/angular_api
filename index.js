@@ -17,7 +17,7 @@ app.use(helmet.xssFilter());
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({credentials: true, origin: 'http://localhost:4200'}))
-app.use(user_session)
+// app.use(user_session)
 // console.log(optn.getCon())
 
 
