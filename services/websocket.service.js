@@ -38,7 +38,7 @@ webServer.on('connection', socket=>{
         
         const cookie=socket.reqHead.cookie
         var user =parseCookies(cookie)
-        console.log(message);
+        // console.log(message);
         if(Buffer.isBuffer(message)){
             
             new Promise (async()=>{
@@ -74,7 +74,8 @@ webServer.on('connection', socket=>{
             if(m.type ==="message"){
                 const newdata = JSON.parse(message)
                 newdata["sender_id"]=user["id"]
-                chats_controller.newMessage(JSON.parse(newdata))
+                // console.log(newdata)
+                chats_controller.newMessage(newdata)
                 if(m.room_id){
                     const d = new Date();
                     chats_controller.updateTime({"curtime": d ,"room_id": m.room_id})
@@ -101,7 +102,7 @@ webServer.on('connection', socket=>{
         console.log(m)
         if(!m[0]){
             if(m.type ==="message"){
-                console.log(data)
+                // console.log(data)
                 // new Promise (async()=>{
                 //     // data.push("test")
                 //     var test = await chats_controller.getRoomsByUserID(JSON.parse(data))
@@ -126,7 +127,8 @@ webServer.on('connection', socket=>{
                 m.push(rooms.data)
                 webServer.clients.forEach(function each(client){
                     if(client.readyState ===  wss.OPEN){
-                        // console.log(data)
+                        console.log(m)
+                        console.log(parseCookies(client.reqHead.cookie)['id'])
                         client.send(JSON.stringify(m))
                     }
                 })
