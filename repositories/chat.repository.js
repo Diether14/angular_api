@@ -18,13 +18,14 @@ export default class ChatRepository extends Repository {
     }
     //websocket
     async newMessage(data){
-        // console.log(data)
+        console.log("newMessage")
+        console.log(data)
         if(!data.room_id){
             const q = `INSERT INTO ${this.model1.table} (creator_id,type,user_id2)
                 VALUES (:creator_id,:type,:uid2);`;
             const params = {
                 binds: {
-                    creator_id:  data.uid1,
+                    creator_id: this.crypto.decrypt(data.sender_id),
                     type: "rm",
                     uid2: data.uid2
                 }
@@ -44,7 +45,7 @@ export default class ChatRepository extends Repository {
                         const p1 ={
                             binds:{
                                 room_id: newgroupid,
-                                uid: data.uid1
+                                uid: this.crypto.decrypt(data.sender_id)
                             }
                         }
                         const u2 = `INSERT INTO ${this.model2.table} (room_id,user_id) VALUES (:room_id,:uid)`
@@ -62,8 +63,8 @@ export default class ChatRepository extends Repository {
                         const params = {
                             binds: {
                                 room_id: newgroupid,
-                                message: data.text,
-                                sender_id: data.uid1
+                                message: data.message,
+                                sender_id: this.crypto.decrypt(data.sender_id)
                             }
                         };
                         return new Promise(async (resolve, reject) => {
@@ -86,8 +87,8 @@ export default class ChatRepository extends Repository {
         const params = {
             binds: {
                 room_id: data.room_id,
-                message: data.text,
-                sender_id: data.uid1
+                message: data.message,
+                sender_id: this.crypto.decrypt(data.sender_id)
             }
         };
         return new Promise(async (resolve, reject) => {
